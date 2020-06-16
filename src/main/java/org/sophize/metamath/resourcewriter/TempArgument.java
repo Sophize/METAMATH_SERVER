@@ -1,4 +1,4 @@
-package mmj.sophize;
+package org.sophize.metamath.resourcewriter;
 
 import mmj.lang.ParseTree;
 import mmj.lang.Stmt;

@@ -1,4 +1,4 @@
-package mmj.sophize;
+package org.sophize.metamath.resourcewriter;
 
 import mmj.lang.Assrt;
 import mmj.lang.LogHyp;
@@ -16,14 +16,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static mmj.sophize.Helpers.*;
+import static org.sophize.metamath.resourcewriter.Helpers.*;
 
 class TempProposition {
   List<Assrt> assrts;
   List<List<Var>> distinctVars;
 
   TempProposition(Assrt assrt, List<List<Var>> distinctVars) {
-    this.assrts = Arrays.asList(assrt);
+    this.assrts = List.of(assrt);
     this.distinctVars = distinctVars;
   }
 
@@ -110,7 +110,7 @@ class TempProposition {
   private static final Map<String, String> SPECIAL_THEOREM_NAMES = new HashMap<>();
 
   static {
-    String fileName = "special_theorems";
+    String fileName = "mm_dbs/special_theorems";
 
     try {
       try (Stream<String> stream = Files.lines(Paths.get(fileName))) {

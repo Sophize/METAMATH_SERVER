@@ -1,4 +1,4 @@
-package mmj.sophize;
+package org.sophize.metamath.resourcewriter;
 
 import mmj.gmff.GMFFManager;
 import mmj.lang.*;
@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static mmj.sophize.Helpers.*;
+import static org.sophize.metamath.resourcewriter.Helpers.*;
 
 class ResourceStore {
   static Map<String, String> latexdefMap;

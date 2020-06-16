@@ -1,4 +1,4 @@
-package mmj.sophize;
+package org.sophize.metamath.resourcewriter;
 
 import mmj.lang.Stmt;
 import mmj.lang.Sym;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static mmj.sophize.Helpers.*;
+import static org.sophize.metamath.resourcewriter.Helpers.*;
 
 class TempTerm {
 

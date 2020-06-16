@@ -1,4 +1,4 @@
-package mmj.sophize;
+package org.sophize.metamath.resourcewriter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mmj.gmff.GMFFManager;
@@ -22,8 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
-import static mmj.sophize.TempTerm.createPrimitiveMetamathTerm;
 import static org.sophize.datamodel.ResourceUtils.toJsonString;
+import static org.sophize.metamath.resourcewriter.TempTerm.createPrimitiveMetamathTerm;
 
 public class ResourceWriter {
   private static final String OUTPUT_DIRECTORY = "output";

@@ -1,4 +1,4 @@
-package mmj.sophize;
+package org.sophize.metamath.resourcewriter;
 
 import mmj.lang.*;
 import org.sophize.datamodel.Citation;
