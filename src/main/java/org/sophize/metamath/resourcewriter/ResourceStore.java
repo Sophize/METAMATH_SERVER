@@ -105,6 +105,7 @@ class ResourceStore {
     for (Stmt stmt : orderedStmts) {
       Assrt assrt = getPropositionAssrt(stmt);
       if (assrt == null) continue;
+      if (stmt.getSeq() % 1000000 == 0) System.out.println("dup seq: " + stmt.getSeq());
       String label = assrt.getLabel();
       boolean canBeUnprocessedDuplicate =
           (label.contains("ALT") || label.contains("OLD"))
@@ -161,11 +162,14 @@ class ResourceStore {
 
   private static Assrt findOriginal(Set<Assrt> duplicates) {
     List<Assrt> sortedDuplicates =
-        duplicates.stream().sorted(Comparator.comparing(Stmt::getLabel)).collect(toList());
-    return sortedDuplicates.stream()
-        .filter(assrt -> !assrt.getLabel().contains("ALT") && !assrt.getLabel().contains("OLD"))
-        .findFirst()
-        .orElse(sortedDuplicates.get(0));
+        duplicates.stream().sorted(Comparator.comparing(Stmt::getSeq)).collect(toList());
+    Assrt smallestLabel = null;
+    for (var assrt : sortedDuplicates) {
+      if (smallestLabel == null || smallestLabel.getLabel().length() > assrt.getLabel().length()) {
+        smallestLabel = assrt;
+      }
+    }
+    return smallestLabel;
   }
 
   private static Beliefset getDefaultBeliefset(
