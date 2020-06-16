@@ -1,0 +1,15 @@
+LoadFile,mm_dbs/set.mm
+Parse,*
+SvcArg,databaseName,set.mm
+SvcCall,
+Clear,
+LoadFile,mm_dbs/iset.mm
+Parse,*
+SvcArg,databaseName,iset.mm
+SvcCall,
+Clear,
+LoadFile,mm_dbs/nf.mm
+Parse,*
+SvcArg,databaseName,nf.mm
+SvcCall
+Clear,
