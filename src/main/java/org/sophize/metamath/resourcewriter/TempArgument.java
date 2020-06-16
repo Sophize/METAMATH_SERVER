@@ -2,15 +2,16 @@ package org.sophize.metamath.resourcewriter;
 
 import mmj.lang.ParseTree;
 import mmj.lang.Stmt;
-import mmj.lang.Theorem;
 import mmj.lang.Var;
 import mmj.verify.ProofDerivationStepEntry;
 import org.sophize.datamodel.Argument;
+import org.sophize.datamodel.Citation;
 import org.sophize.datamodel.Language;
 import org.sophize.datamodel.MetaLanguage;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.sophize.metamath.Utils.*;
 import static org.sophize.metamath.resourcewriter.Helpers.getCitation;
@@ -82,19 +83,16 @@ class TempArgument {
     if (!conclusionLabel.equals(stmt.getLabel()))
       argumentText += "\n\\\n" + toResourceRemark(stmt.getDescription());
     argument.setArgumentText(argumentText);
-
+    argument.setCitations(new Citation[] {getCitation(stmt.getLabel())});
     return argument;
   }
 
-  List<String> getLookupTerms() {
-    List<String> lookupTerms =
-        dummyVariables.stream()
-            .map(var -> Helpers.varToLookupTerm(var.getActiveVarHyp()))
-            .collect(Collectors.toCollection(ArrayList::new));
-    for (ParseTree step : parsedSteps) {
-      lookupTerms.addAll(getLookupTermsForParseNode(step.getRoot()));
-    }
-    return lookupTerms;
+  private List<String> getLookupTerms() {
+    return Stream.concat(
+            dummyVariables.stream().map(var -> varToLookupTerm(var.getActiveVarHyp())),
+            parsedSteps.stream()
+                .flatMap(step -> getLookupTermsForParseNode(step.getRoot()).stream()))
+        .collect(Collectors.toList());
   }
 
   private String getCorrectedPropReference(String reference) {
