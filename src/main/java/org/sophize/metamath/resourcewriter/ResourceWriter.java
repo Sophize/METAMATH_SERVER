@@ -28,6 +28,7 @@ import static org.sophize.metamath.resourcewriter.TempTerm.createPrimitiveMetama
 
 public class ResourceWriter {
   private static final String OUTPUT_DIRECTORY = "output";
+  private static final String RUN_PARMS_FILE = "run_parms/RunParmsResourceWriter.txt";
   private static List<ResourceStore> STORES = new ArrayList<>();
 
   private static final Map<String, String> TYPE_TO_COLOR_LATEX =
@@ -36,12 +37,12 @@ public class ResourceWriter {
           "class", "\\color{#C3C}",
           "setvar", "\\color{red}");
 
-  public static void main(final String[] args) {
+  public static void main(String[] args) {
     BatchMMJ2 batchMMJ2 = new BatchMMJ2();
-    batchMMJ2.generateSvcCallback(args, ResourceWriter::svcCallback);
+    batchMMJ2.generateSvcCallback(new String[] {RUN_PARMS_FILE}, ResourceWriter::svcCallback);
   }
 
-  public static void svcCallback(
+  private static void svcCallback(
       Messages messages,
       OutputBoss outputBoss,
       LogicalSystem logicalSystem,
@@ -57,7 +58,7 @@ public class ResourceWriter {
     processGrammar(grammar, svcArgs.get("databaseName"));
   }
 
-  public static void processGrammar(Grammar grammar, String databaseName) {
+  private static void processGrammar(Grammar grammar, String databaseName) {
     try {
       ResourceStore resourceStore = new ResourceStore(databaseName);
       resourceStore.createResources(grammar);
@@ -113,7 +114,7 @@ public class ResourceWriter {
         Var var = (Var) hyp.getFormula().getSym()[1];
 
         String existingMapping = GMFFManager.LATEXDEF_MAP.get(var.getId());
-        Helpers.myAssert(existingMapping != null);
+        myAssert(existingMapping != null);
         String colorInfo = TYPE_TO_COLOR_LATEX.get(type.getId());
         if (!existingMapping.startsWith(colorInfo)) {
           GMFFManager.LATEXDEF_MAP.put(
@@ -124,8 +125,11 @@ public class ResourceWriter {
     GMFFManager.LATEXDEF_MAP.put("|-", "\\scriptsize\\color{#999} \\vdash");
     GMFFManager.LATEXDEF_MAP.put("wff", "\\scriptsize\\color{#999} {\\rm wff}");
     GMFFManager.LATEXDEF_MAP.put("class", "\\scriptsize\\color{#999} {\\rm class}");
+    Files.createDirectories(Paths.get(OUTPUT_DIRECTORY));
     try (PrintStream out =
-        new PrintStream(new FileOutputStream("output/metamath_set_mm_latex_map"))) {
+        new PrintStream(
+            new FileOutputStream(
+                Paths.get(OUTPUT_DIRECTORY, "metamath_set_mm_latex_map").toString()))) {
       out.print(new ObjectMapper().writeValueAsString(GMFFManager.LATEXDEF_MAP));
     }
   }
