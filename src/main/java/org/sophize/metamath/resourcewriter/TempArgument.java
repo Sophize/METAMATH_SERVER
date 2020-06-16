@@ -12,14 +12,11 @@ import org.sophize.datamodel.MetaLanguage;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static mmj.sophize.Helpers.*;
+import static org.sophize.metamath.Utils.*;
+import static org.sophize.metamath.resourcewriter.Helpers.getCitation;
+import static org.sophize.metamath.resourcewriter.Helpers.toResourceRemark;
 
 class TempArgument {
-  // This tag is used by Sophize to detect that the text is in "argument-table" format and not the
-  // usual metamath language.
-  private static final String ARGUMENT_PREFIX = "ARGUMENT";
-  private static final String ARGUMENT_TABLE_HEADER =
-      "| Step | Hyp | Ref | Expression |\n|---|---|---|---|\n";
 
   Stmt stmt;
   List<ProofDerivationStepEntry> proofSteps;
@@ -50,9 +47,7 @@ class TempArgument {
   }
 
   Argument getArgument(Map<String, TempProposition> propositionData) {
-    List<String> statementLines =
-        new ArrayList<>(
-            Arrays.asList(ARGUMENT_PREFIX, getDummyVariablesHeader(), ARGUMENT_TABLE_HEADER));
+    List<String> statementLines = new ArrayList<>(getArgumentHeaders(dummyVariables));
     Set<String> premises = new HashSet<>();
     try {
       for (int i = 0; i < proofSteps.size(); i++) {
@@ -105,12 +100,6 @@ class TempArgument {
   private String getCorrectedPropReference(String reference) {
     String original = alternateToOriginalStmt.getOrDefault(reference, reference);
     return dedupedPropsIdMap.getOrDefault(original, original);
-  }
-
-  private String getDummyVariablesHeader() {
-    if (!(stmt instanceof Theorem)) return "";
-    if (dummyVariables == null || dummyVariables.isEmpty()) return "";
-    return dummyVariables.stream().map(Var::getId).collect(Collectors.joining(" ")) + "\n";
   }
 
   private static String getHypString(String[] hypStep) {

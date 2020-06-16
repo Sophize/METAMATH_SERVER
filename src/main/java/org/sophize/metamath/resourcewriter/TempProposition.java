@@ -16,7 +16,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static org.sophize.metamath.resourcewriter.Helpers.*;
+import static org.sophize.metamath.Helpers.getLookupTermsForParseNode;
+import static org.sophize.metamath.Helpers.varToLookupTerm;
+import static org.sophize.metamath.resourcewriter.Helpers.getCitation;
+import static org.sophize.metamath.resourcewriter.Helpers.toResourceRemark;
 
 class TempProposition {
   List<Assrt> assrts;
@@ -75,7 +78,7 @@ class TempProposition {
     lookupTerms.addAll(
         distinctVars.stream()
             .flatMap(List::stream)
-            .map(var -> Helpers.varToLookupTerm(var.getActiveVarHyp()))
+            .map(var -> varToLookupTerm(var.getActiveVarHyp()))
             .collect(Collectors.toList()));
     return lookupTerms;
   }

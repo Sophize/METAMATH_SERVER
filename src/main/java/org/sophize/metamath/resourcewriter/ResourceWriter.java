@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 import static org.sophize.datamodel.ResourceUtils.toJsonString;
+import static org.sophize.metamath.Utils.myAssert;
 import static org.sophize.metamath.resourcewriter.TempTerm.createPrimitiveMetamathTerm;
 
 public class ResourceWriter {

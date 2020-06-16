@@ -9,7 +9,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static org.sophize.metamath.resourcewriter.Helpers.*;
+import static org.sophize.metamath.Utils.*;
+import static org.sophize.metamath.resourcewriter.Helpers.areSameProps;
 
 class ResourceStore {
   static Map<String, String> latexdefMap;
@@ -38,7 +39,7 @@ class ResourceStore {
   }
 
   String getDedupPostfix() {
-    return Helpers.DEDUP_POSTFIX + this.databaseName.charAt(0);
+    return DEDUP_POSTFIX + this.databaseName.charAt(0);
   }
 
   void createResources(Grammar grammar) {
@@ -280,6 +281,23 @@ class ResourceStore {
       System.out.println(e.toString());
       return null;
     }
+  }
+
+  private static Stmt findDefinition(List<Stmt> orderedStmts, int startingIndex, Sym symId) {
+    for (int i = startingIndex; i < orderedStmts.size(); i++) {
+      Stmt stmt = orderedStmts.get(i);
+      if (!(stmt instanceof Axiom)) {
+        continue;
+      }
+      Sym[] formula = stmt.getFormula().getSym();
+      if (!formula[0].getId().equals("|-")) continue;
+      for (Sym formulaSym : formula) {
+        if (formulaSym.getId().equals(symId.getId())) {
+          return stmt;
+        }
+      }
+    }
+    return null;
   }
 
   private static void addFormulaVarsToSet(Formula formula, Set<String> varIdSet) {

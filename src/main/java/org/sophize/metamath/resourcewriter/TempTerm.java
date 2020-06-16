@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.sophize.metamath.resourcewriter.Helpers.*;
+import static org.sophize.metamath.Utils.getLookupTermsForParseNode;
+import static org.sophize.metamath.resourcewriter.Helpers.getCitation;
+import static org.sophize.metamath.resourcewriter.Helpers.toResourceRemark;
 
 class TempTerm {
 
@@ -115,6 +117,10 @@ class TempTerm {
         "Section 4.2.5 of [metamath book](http://us.metamath.org/#book) p.125");
     term.setCitations(new Citation[] {bookCitation});
     return term;
+  }
+
+  private static String getTermWithDisplayPhrase(String assignableId, String displayPhrase) {
+    return "#(T_" + assignableId + ", '" + displayPhrase + "')";
   }
 
   private static Term createMetamathTerm(
