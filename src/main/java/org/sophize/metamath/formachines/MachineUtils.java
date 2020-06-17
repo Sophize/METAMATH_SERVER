@@ -7,9 +7,6 @@ import org.sophize.datamodel.MachineResponse;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.datamodel.ResourceType;
 import org.sophize.datamodel.TruthValue;
-import org.sophize.metamath.formachines.machines.MetamathMachine;
-import org.sophize.metamath.formachines.machines.NN0Machine;
-import org.sophize.metamath.formachines.machines.NNMachine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,8 +19,6 @@ public class MachineUtils {
   public static final String SET_DB = "set.mm";
   public static final String ISET_DB = "iset.mm";
   public static final String NF_DB = "nf.mm";
-  public static List<MetamathMachine> ALL_MACHINES =
-      List.of(NN0Machine.getInstance(), NNMachine.getInstance());
 
   public static String[] toStringArray(List<ResourcePointer> ptrs) {
     return ptrs.stream().map(ResourcePointer::toString).toArray(String[]::new);

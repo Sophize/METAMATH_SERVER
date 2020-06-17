@@ -181,7 +181,8 @@ public class ResourceWriter {
     }
 
     directory = getDirectory(Machine.class);
-    for (var machine : MachineUtils.ALL_MACHINES) {
+    for (var machineId : MachineId.values()) {
+      var machine = machineId.getMachine();
       ResourceUtils.writeJson(directory, machine.getAssignablePtr().getId(), machine.toDatamodel());
     }
   }
