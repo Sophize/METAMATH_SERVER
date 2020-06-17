@@ -83,7 +83,14 @@ public class RunParmFile implements Iterator<RunParmArrayEntry>, Closeable {
     public RunParmFile(final Paths paths, final String runParmFileNameArgument)
         throws MMJException, IOException
     {
-
+        String resourcePrefix = "Resource:";
+        if(runParmFileNameArgument.startsWith(resourcePrefix)) {
+            var resourceName = runParmFileNameArgument.substring(resourcePrefix.length());
+            var inputStream = RunParmFile.class.getResourceAsStream(resourceName);
+            runParmFileReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+            inputLine = runParmFileReader.readLine();
+            return;
+        }
         try {
             runParmFile = paths.buildMMJ2FilePath(runParmFileNameArgument);
         } catch (final NullPointerException e) {

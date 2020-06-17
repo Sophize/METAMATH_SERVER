@@ -228,8 +228,20 @@ public class Systemizer {
                 new InputStreamReader(new FileInputStream(f)),
                 MMIOConstants.READER_BUFFER_SIZE);
         } catch (final FileNotFoundException e) {
-            throw new MMIOException(MMIOConstants.ERRMSG_LOAD_REQ_FILE_NOTFND,
+            String resourcePrefix = "Resource:";
+            if(!fileNameIn.startsWith(resourcePrefix)) {
+                throw new MMIOException(MMIOConstants.ERRMSG_LOAD_REQ_FILE_NOTFND,
+                                        f.getAbsolutePath());
+            }
+            try{
+                var resourceName = fileNameIn.substring(resourcePrefix.length());
+                var inputStream = Systemizer.class.getResourceAsStream(resourceName);
+                readerIn = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"),
+                                              MMIOConstants.READER_BUFFER_SIZE);
+            } catch (UnsupportedEncodingException e1){
+              throw new MMIOException(MMIOConstants.ERRMSG_LOAD_REQ_FILE_NOTFND,
                 f.getAbsolutePath());
+            }
         }
 
         try {
