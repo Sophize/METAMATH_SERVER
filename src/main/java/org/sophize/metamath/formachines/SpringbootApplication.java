@@ -38,7 +38,7 @@ public class SpringbootApplication {
 
   @GetMapping("/")
   public String hello() {
-    return "Hello to world from METAMATH_SERVER!";
+    return "Hello to the world from METAMATH_SERVER!";
   }
 
   @PostMapping("/machine_request")
