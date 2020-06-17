@@ -173,6 +173,11 @@ public class ResourceWriter {
     for (Map.Entry<String, Beliefset> entry : beliefsets.entrySet()) {
       ResourceUtils.writeJson(directory, entry.getKey(), entry.getValue());
     }
+
+    directory = getDirectory(Machine.class);
+    for (var machine : MachineUtils.ALL_MACHINES) {
+      ResourceUtils.writeJson(directory, machine.getAssignablePtr().getId(), machine.toDatamodel());
+    }
   }
 
   private static Map<String, Term> getHardcodedTerms() {

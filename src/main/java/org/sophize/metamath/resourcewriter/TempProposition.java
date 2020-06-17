@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static org.sophize.metamath.Helpers.getLookupTermsForParseNode;
-import static org.sophize.metamath.Helpers.varToLookupTerm;
+import static org.sophize.metamath.Utils.getLookupTermsForParseNode;
+import static org.sophize.metamath.Utils.varToLookupTerm;
 import static org.sophize.metamath.resourcewriter.Helpers.getCitation;
 import static org.sophize.metamath.resourcewriter.Helpers.toResourceRemark;
 
