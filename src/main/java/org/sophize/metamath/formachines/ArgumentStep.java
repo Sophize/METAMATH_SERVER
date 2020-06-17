@@ -3,6 +3,7 @@ package org.sophize.metamath.formachines;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import mmj.lang.Assrt;
+import mmj.lang.LogHyp;
 import mmj.lang.Stmt;
 import mmj.lang.Var;
 import org.sophize.datamodel.ResourcePointer;
@@ -68,6 +69,15 @@ public class ArgumentStep {
 
   public static ArgumentStep fromSetMM(Stmt stmt, List<Integer> hypIndices) {
     return fromDbReference(stmt, SET_DB, hypIndices, Map.of());
+  }
+
+  ArgumentStep withHypIndices(List<Integer> hypIndices) {
+    return new ArgumentStep(hypIndices, reference, hypothesis, expression, lookupTerms);
+  }
+
+  ArgumentStep replace(ResourcePointer original, ResourcePointer updated) {
+    if (!original.equals(reference)) return this;
+    return new ArgumentStep(hypIndices, updated, hypothesis, expression, lookupTerms);
   }
 
   String getHypString() {

@@ -10,6 +10,7 @@ import org.sophize.metamath.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
@@ -19,7 +20,6 @@ public class MetamathArgument {
   private final List<ArgumentStep> steps;
   private final ResourcePointer argumentPtr;
   private final MetamathProposition conclusion;
-
 
   public MetamathArgument(
       ResourcePointer ptr,
@@ -33,7 +33,7 @@ public class MetamathArgument {
   }
 
   public MetamathArgument(
-          ResourcePointer ptr, MetamathProposition conclusion, List<ArgumentStep> steps) {
+      ResourcePointer ptr, MetamathProposition conclusion, List<ArgumentStep> steps) {
     this(ptr, conclusion, steps, List.of());
   }
 
@@ -66,6 +66,12 @@ public class MetamathArgument {
     argument.setArgumentText(argumentText);
 
     return argument;
+  }
+
+  MetamathArgument replace(ResourcePointer original, ResourcePointer updated) {
+    var updatedSteps =
+        steps.stream().map(step -> step.replace(original, updated)).collect(Collectors.toList());
+    return new MetamathArgument(argumentPtr, conclusion, updatedSteps, dummyVariables);
   }
 
   private List<String> getLookupTerms() {

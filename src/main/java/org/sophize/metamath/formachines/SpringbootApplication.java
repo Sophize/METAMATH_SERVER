@@ -90,6 +90,7 @@ public class SpringbootApplication {
     response.setResolvedProposition(parsed.toProposition());
     if (!isTrue(request.getFetchProof())) return response;
 
+    proof = MachineProofExpander.expand(proof);
     response.setProofPropositions(proof.getPropositions());
     response.setProofArguments(proof.getArguments());
     return response;
