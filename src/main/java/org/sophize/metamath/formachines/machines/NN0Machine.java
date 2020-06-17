@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
 import static org.sophize.metamath.formachines.MachineUtils.getDigitsLenient;
 import static org.sophize.metamath.formachines.PropositionFactory.NN0Proposition;
+import static org.sophize.metamath.formachines.PropositionFactory.NNProposition;
 
 public class NN0Machine extends MetamathMachine {
   private static NN0Machine instance = new NN0Machine();
@@ -137,6 +138,7 @@ public class NN0Machine extends MetamathMachine {
     var number = NumberRepresentation.fromTokens(Arrays.copyOf(tokens, tokens.length - 1));
 
     if (setName.equals("NN0")) return NN0Proposition(number);
+    else if (setName.equals("NN")) return NNProposition(number);
 
     throw new IllegalStateException("Shouldn't happen");
   }

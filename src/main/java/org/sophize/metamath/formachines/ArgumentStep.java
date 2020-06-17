@@ -3,7 +3,6 @@ package org.sophize.metamath.formachines;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import mmj.lang.Assrt;
-import mmj.lang.LogHyp;
 import mmj.lang.Stmt;
 import mmj.lang.Var;
 import org.sophize.datamodel.ResourcePointer;
@@ -37,6 +36,27 @@ public class ArgumentStep {
     this.hypothesis = hypothesis;
     this.expression = expression;
     this.lookupTerms = lookupTerms;
+  }
+
+  public static ArgumentStep fromEphemeralReference(
+      MetamathProposition proposition,
+      String dbName,
+      List<Integer> hypIndices,
+      Map<Var, Var> substitutions) {
+    // TODO: input actual hypothesis and verify/compute substitutions.
+    if (!substitutions.isEmpty()) throw new UnsupportedOperationException("Not implemented yet");
+
+    String expression = proposition.getAssrt().getExpression();
+    return new ArgumentStep(
+        hypIndices,
+        proposition.getResourcePtr(),
+        "",
+        expression,
+        MachineUtils.getLookupTerms(expression, dbName));
+  }
+
+  public static ArgumentStep fromEphemeralReference(MetamathProposition proposition) {
+    return fromEphemeralReference(proposition, SET_DB, List.of(), Map.of());
   }
 
   public static ArgumentStep fromDbReference(

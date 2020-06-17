@@ -2,6 +2,7 @@ package org.sophize.metamath.formachines;
 
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.datamodel.ResourceType;
+import org.sophize.metamath.formachines.machines.LessThanMachine;
 import org.sophize.metamath.formachines.machines.MetamathMachine;
 import org.sophize.metamath.formachines.machines.NN0Machine;
 import org.sophize.metamath.formachines.machines.NNMachine;
@@ -10,7 +11,8 @@ import static org.sophize.datamodel.ResourcePointer.PointerType.PERMANENT;
 
 public enum MachineId {
   NN0(getPermanentPtr("WpL"), NN0Machine.getInstance()),
-  NN(getPermanentPtr("WqL"), NNMachine.getInstance());
+  NN(getPermanentPtr("WqL"), NNMachine.getInstance()),
+  LESS_THAN(getPermanentPtr("DA1"), LessThanMachine.getInstance());
 
   private final ResourcePointer permanentPtr;
   private final MetamathMachine machine;
