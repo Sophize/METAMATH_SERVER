@@ -12,6 +12,8 @@ import mmj.util.OutputBoss;
 import mmj.verify.Grammar;
 import mmj.verify.VerifyProofs;
 import org.sophize.datamodel.*;
+import org.sophize.metamath.formachines.Databases;
+import org.sophize.metamath.formachines.MachineUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -55,6 +57,8 @@ public class ResourceWriter {
       TheoremLoader theoremLoader,
       File svcFolder,
       Map<String, String> svcArgs) {
+    Databases.addGrammar(
+        null, null, null, null, grammar, null, null, null, null, null, null, svcArgs);
     processGrammar(grammar, svcArgs.get("databaseName"));
   }
 
@@ -125,6 +129,8 @@ public class ResourceWriter {
     GMFFManager.LATEXDEF_MAP.put("|-", "\\scriptsize\\color{#999} \\vdash");
     GMFFManager.LATEXDEF_MAP.put("wff", "\\scriptsize\\color{#999} {\\rm wff}");
     GMFFManager.LATEXDEF_MAP.put("class", "\\scriptsize\\color{#999} {\\rm class}");
+    GMFFManager.LATEXDEF_MAP.put("|", "\\vert");
+
     Files.createDirectories(Paths.get(OUTPUT_DIRECTORY));
     try (PrintStream out =
         new PrintStream(
