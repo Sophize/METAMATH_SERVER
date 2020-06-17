@@ -1,6 +1,11 @@
+service: metamath-server
 runtime: java11
-instance_class: F1
+instance_class: F4
+
+automatic_scaling:
+  min_instances: 1
+  max_concurrent_requests: 40
 
 # Explicitly set the memory limit and maximum heap size for the Spring Boot app
-env_variables:
-  JAVA_TOOL_OPTIONS: "-XX:MaxRAM=256m -XX:ActiveProcessorCount=2 -Xmx32m"
+#env_variables:
+#  JAVA_TOOL_OPTIONS: "-XX:MaxRAM=1024m -XX:ActiveProcessorCount=2 -Xmx512m"

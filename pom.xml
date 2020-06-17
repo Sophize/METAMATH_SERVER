@@ -101,7 +101,7 @@
         <version>2.2.0</version>
         <configuration>
           <projectId>GCLOUD_CONFIG</projectId>
-          <version>springboot-helloworld</version>
+          <version>GCLOUD_CONFIG</version>
         </configuration>
       </plugin>
     </plugins>
