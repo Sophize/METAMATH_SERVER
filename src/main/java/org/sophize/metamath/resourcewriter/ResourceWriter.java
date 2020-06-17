@@ -30,7 +30,7 @@ import static org.sophize.metamath.resourcewriter.TempTerm.createPrimitiveMetama
 
 public class ResourceWriter {
   private static final String OUTPUT_DIRECTORY = "output";
-  private static final String RUN_PARMS_FILE = "run_parms/RunParmsResourceWriter.txt";
+  private static final String RUN_PARMS_FILE = "writer_resources/RunParmsResourceWriter.txt";
   private static List<ResourceStore> STORES = new ArrayList<>();
 
   private static final Map<String, String> TYPE_TO_COLOR_LATEX =

@@ -24,7 +24,7 @@ import static org.sophize.metamath.Utils.isTrue;
 @RestController
 public class SpringbootApplication {
 
-  private static final String RUN_PARMS_FILE = "run_parms/RunParmsServer.txt";
+  private static final String RUN_PARMS_FILE = "Resource:/RunParmsServer.txt";
 
   public static void main(String[] args) {
     SpringApplication.run(SpringbootApplication.class, args);

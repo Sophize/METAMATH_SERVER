@@ -1,9 +1,9 @@
-LoadFile,mm_dbs/set_truncated_for_server.mm
+LoadFile,Resource:/set_truncated_for_server.mm
 Parse,*
 SvcArg,databaseName,set.mm
 SvcCall,
 Clear,
-LoadFile,mm_dbs/iset.mm
+LoadFile,Resource:/iset.mm
 Parse,*
 SvcArg,databaseName,iset.mm
 SvcCall,

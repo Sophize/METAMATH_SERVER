@@ -113,7 +113,7 @@ class TempProposition {
   private static final Map<String, String> SPECIAL_THEOREM_NAMES = new HashMap<>();
 
   static {
-    String fileName = "mm_dbs/special_theorems";
+    String fileName = "writer_resources/special_theorems";
 
     try {
       try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
