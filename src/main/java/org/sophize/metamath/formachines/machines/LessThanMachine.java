@@ -48,8 +48,8 @@ public class LessThanMachine extends MetamathMachine {
                               .mapToObj(
                                   op1 ->
                                       nonDecimalComparisionStatement(
-                                          new NumberRepresentation(op1),
-                                          new NumberRepresentation(op2))))
+                                          new NumberRepresentation(op1, false),
+                                          new NumberRepresentation(op2, false))))
                   .flatMap(Function.identity()))
           .collect(Collectors.toList());
   private static String LESS_THAN_SYMBOL = "<";
@@ -60,10 +60,6 @@ public class LessThanMachine extends MetamathMachine {
 
   public boolean isIndexable() {
     return true;
-  }
-
-  public ResourcePointer getPermanentPtr() {
-    return MachineId.NN.getPermanentPtr();
   }
 
   public Language getDefaultLanguage() {
@@ -198,7 +194,7 @@ public class LessThanMachine extends MetamathMachine {
             ArgumentStep.fromEphemeralReference(cLessThanPrimitive10),
             ArgumentStep.fromSetMM(safeUse(DECLTI), List.of(0, 1, 2, 3), decltiSubstitutions));
     var newArgumentPtr = ResourcePointer.ephemeral(ARGUMENT, statement.getLabel());
-    var newArg = new MetamathArgument(newArgumentPtr, LessThanProposition(statement), steps);
+    var newArg = new MetamathArgument(newArgumentPtr, prop, steps);
     return new MachineProof(
         newGeneratedPropositions, Map.of(prop.getResourcePtr(), newArg), fromMachineArguments);
   }
@@ -233,7 +229,7 @@ public class LessThanMachine extends MetamathMachine {
             ArgumentStep.fromSetMM(safeUse(EQBRTRI), List.of(0, 1), eqbrtriSubstitutions));
 
     var newArgumentPtr = ResourcePointer.ephemeral(ARGUMENT, statement.getLabel());
-    var newArg = new MetamathArgument(newArgumentPtr, LessThanProposition(statement), steps);
+    var newArg = new MetamathArgument(newArgumentPtr, prop, steps);
     return new MachineProof(
         newGeneratedPropositions, Map.of(prop.getResourcePtr(), newArg), fromMachineArguments);
   }
@@ -274,7 +270,7 @@ public class LessThanMachine extends MetamathMachine {
             ArgumentStep.fromSetMM(
                 safeUse(DECLTC), List.of(0, 1, 2, 3, 4, 5), decltcSubstitutions));
     var newArgumentPtr = ResourcePointer.ephemeral(ARGUMENT, statement.getLabel());
-    var newArg = new MetamathArgument(newArgumentPtr, LessThanProposition(statement), steps);
+    var newArg = new MetamathArgument(newArgumentPtr, prop, steps);
     return new MachineProof(
         newGeneratedPropositions, Map.of(prop.getResourcePtr(), newArg), fromMachineArguments);
   }

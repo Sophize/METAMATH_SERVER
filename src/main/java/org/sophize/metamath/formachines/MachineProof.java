@@ -77,7 +77,7 @@ public class MachineProof {
 
   private static Argument toPremiseMachineArgument(ResourcePointer ptr, MetamathMachine machine) {
     Argument argument = new Argument();
-    argument.setPremiseMachine(machine.getPermanentPtr().toString());
+    argument.setPremiseMachine(machine.getAssignablePtr().toString());
     argument.setConclusion(ptr.toString());
     argument.setEphemeralPtr(ResourcePointer.ephemeral(ARGUMENT, ptr.getId()).toString());
     return argument;

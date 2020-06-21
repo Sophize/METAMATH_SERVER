@@ -19,8 +19,6 @@ public abstract class MetamathMachine {
 
   public abstract boolean isIndexable();
 
-  public abstract ResourcePointer getPermanentPtr();
-
   public abstract Language getDefaultLanguage();
 
   public abstract String getDefaultStrictStatement();
@@ -40,12 +38,15 @@ public abstract class MetamathMachine {
   public abstract MachineProof getProof(MetamathProposition proposition);
 
   public ResourcePointer getAssignablePtr() {
-    return ResourcePointer.assignable(ResourceType.MACHINE, getClass().getSimpleName());
+    return new ResourcePointer(
+        "metamath",
+        ResourceType.MACHINE,
+        ResourcePointer.PointerType.ASSIGNABLE,
+        getClass().getSimpleName());
   }
 
   public Machine toDatamodel() {
     Machine machine = new Machine();
-    // machine.setPermanentPtr();  // DONT SET PERMANENT PTR.
     machine.setAssignablePtr(getAssignablePtr().toString());
     machine.setDefaultMaterializeDataset(DEFAULT_MATERIALIZE_DATASET);
     machine.setDescription(getDescription());

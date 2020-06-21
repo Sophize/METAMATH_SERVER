@@ -68,7 +68,7 @@ public class NumberRepresentation {
   }
 
   public NumberRepresentation(long number) {
-    this(number, number > 10, 0);
+    this(number, number >= 10, 0);
   }
 
   public String toString() {

@@ -6,7 +6,6 @@ import org.sophize.datamodel.Language;
 import org.sophize.datamodel.Proposition;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.formachines.*;
-import org.sophize.metamath.formachines.MetamathProposition;
 import org.sophize.metamath.formachines.propositions.NNStatement;
 
 import javax.annotation.Nonnull;
@@ -41,10 +40,6 @@ public class NNMachine extends MetamathMachine {
 
   public boolean isIndexable() {
     return true;
-  }
-
-  public ResourcePointer getPermanentPtr() {
-    return MachineId.NN.getPermanentPtr();
   }
 
   public Language getDefaultLanguage() {

@@ -43,10 +43,6 @@ public class NN0Machine extends MetamathMachine {
     return true;
   }
 
-  public ResourcePointer getPermanentPtr() {
-    return MachineId.NN0.getPermanentPtr();
-  }
-
   public List<Stmt> getPremisePropositions() {
     return PREMISE_PROPOSITIONS;
   }
