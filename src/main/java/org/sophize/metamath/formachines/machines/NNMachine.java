@@ -1,12 +1,12 @@
 package org.sophize.metamath.formachines.machines;
 
 import com.google.common.base.Preconditions;
+import mmj.lang.ParseNode;
 import mmj.lang.Stmt;
 import org.sophize.datamodel.Language;
 import org.sophize.datamodel.Proposition;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.formachines.*;
-import org.sophize.metamath.formachines.propositions.NNStatement;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -16,7 +16,6 @@ import java.util.stream.Stream;
 
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
 import static org.sophize.metamath.formachines.MachineUtils.getDigitsLenient;
-import static org.sophize.metamath.formachines.PropositionFactory.NNProposition;
 
 public class NNMachine extends MetamathMachine {
   private static NNMachine instance = new NNMachine();
@@ -62,33 +61,32 @@ public class NNMachine extends MetamathMachine {
     return List.of();
   }
 
-  public MetamathProposition parseStrict(@Nonnull Proposition proposition) {
-    return NN0Machine.parseNumBelongsToSetStatement(proposition, "NN");
-  }
-
   public MetamathProposition parseLenient(@Nonnull Proposition proposition) {
-    try {
-      List<Integer> digits = getDigitsLenient(proposition.getStatement());
-      if (digits == null) return null;
-      return NNProposition(NumberRepresentation.fromDigits(digits));
-    } catch (Exception e) {
-      return null;
-    }
+    var number = NumberRepresentation.fromDigits(getDigitsLenient(proposition.getStatement()));
+    if (number == null) return null;
+    proposition.setStatement("|- " + number + " e. NN");
+    return parseStrict(proposition);
   }
 
   public String getNotProvableReason(MetamathProposition proposition) {
-    if (!(proposition.getAssrt() instanceof NNStatement))
-      return "This machine doesn't prove such statements";
-    var numeral = ((NNStatement) proposition.getAssrt()).getNumeral();
-    if (numeral.number <= 0) return "Provided number is less than 1";
+    ParseNode assrt = proposition.getAssrt();
+    String doesntHandleReason = "This machine doesn't handle such statements";
+    if (!assrt.stmt.getLabel().equals("wcel")) return doesntHandleReason;
+    if (assrt.child.length != 2) return doesntHandleReason;
+
+    if (!assrt.child[1].stmt.getLabel().equals("cn")) return doesntHandleReason;
+    var numeral = NumberRepresentation.fromParseNode(assrt.child[0]);
+    if (numeral == null) return doesntHandleReason;
+
+    if (numeral.number <= 0) return "Provided number is not a natural number";
     if (numeral.leadingZeros != 0) return "Machine doesn't handle leading zeros yet.";
     return null;
   }
 
   public MachineProof getProof(MetamathProposition proposition) {
     if (getNotProvableReason(proposition) != null) return null;
-    var nnStatement = (NNStatement) proposition.getAssrt();
-    var numeral = nnStatement.getNumeral();
+    ParseNode assrt = proposition.getAssrt();
+    var numeral = NumberRepresentation.fromParseNode(assrt.child[0]);
 
     if (numeral.number <= 10 && !numeral.decimalFormat) {
       return new MachineProof(safeUse(primitiveStatementPtr(numeral.number)));
@@ -122,7 +120,7 @@ public class NNMachine extends MetamathMachine {
       }
       steps.add(step);
     }
-    var argPtr = ResourcePointer.ephemeral(ARGUMENT, proposition.getAssrt().getLabel());
+    var argPtr = ResourcePointer.ephemeral(ARGUMENT, ParseNodeHelpers.getLabel(assrt));
     var arg = new MetamathArgument(argPtr, proposition, steps);
     return new MachineProof(List.of(), Map.of(proposition.getResourcePtr(), arg), Map.of());
   }

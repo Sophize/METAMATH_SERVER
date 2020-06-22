@@ -29,7 +29,13 @@ public abstract class MetamathMachine {
 
   public abstract List<ResourcePointer> getPremiseMachines();
 
-  public abstract MetamathProposition parseStrict(Proposition proposition);
+  public MetamathProposition parseStrict(Proposition proposition) {
+    if (proposition.getLanguage() != Language.METAMATH_SET_MM) return null;
+    String statement = MachineUtils.stripPropositionMarker(proposition.getStatement());
+    var parsedStmt = MachineUtils.parseStatement(statement, MachineUtils.SET_DB);
+    if (parsedStmt == null) return null;
+    return new MetamathProposition(parsedStmt, List.of(), List.of());
+  }
 
   public abstract MetamathProposition parseLenient(Proposition proposition);
 

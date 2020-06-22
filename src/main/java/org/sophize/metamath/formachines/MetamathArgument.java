@@ -6,9 +6,11 @@ import org.sophize.datamodel.Language;
 import org.sophize.datamodel.MetaLanguage;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.Utils;
+import org.sophize.metamath.formachines.machines.MetamathMachine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -72,6 +74,26 @@ public class MetamathArgument {
     var updatedSteps =
         steps.stream().map(step -> step.replace(original, updated)).collect(Collectors.toList());
     return new MetamathArgument(argumentPtr, conclusion, updatedSteps, dummyVariables);
+  }
+
+  public Map<ResourcePointer, MetamathMachine> getMachineArguments() {
+    return steps.stream()
+        .filter(step -> step.machineForProof != null)
+        .collect(
+            Collectors.toMap(step -> step.reference, step -> step.machineForProof, (v1, v2) -> v1));
+  }
+
+  public List<MetamathProposition> getGeneratedPremises() {
+    return steps.stream()
+        .filter(step -> step.machineForProof != null)
+        .limit(steps.size() - 1) // Skip the last step - the conclusion
+        .map(
+            step ->
+                new MetamathProposition(
+                    MachineUtils.parseStatement(step.expression, MachineUtils.SET_DB),
+                    List.of(),
+                    List.of()))
+        .collect(toList());
   }
 
   private List<String> getLookupTerms() {

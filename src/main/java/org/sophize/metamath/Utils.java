@@ -75,14 +75,14 @@ public class Utils {
 
   public static long getNumConstChars(Stmt wffStatement) {
     return Arrays.stream(wffStatement.getFormula().getSym())
-            .skip(1) // we don't want to count the typecode.
-            .filter(sym -> !sym.getId().equals("(") && !sym.getId().equals(")"))
-            .filter(sym -> !(sym instanceof Var))
-            .count();
+        .skip(1) // we don't want to count the typecode.
+        .filter(sym -> !sym.getId().equals("(") && !sym.getId().equals(")"))
+        .filter(sym -> !(sym instanceof Var))
+        .count();
   }
 
-  public static String getAssignableIdForTermInStmt(String stmtLabel, int termIndex, long
-          totalTerm) {
+  public static String getAssignableIdForTermInStmt(
+      String stmtLabel, int termIndex, long totalTerm) {
     return stmtLabel + ((totalTerm > 1) ? (DEDUP_POSTFIX + (termIndex + 1)) : "");
   }
 
@@ -96,6 +96,16 @@ public class Utils {
     if (!val) {
       throw new IllegalStateException("This shouldn't happen!");
     }
+  }
+
+  public static String getStatementWithSubstitutions(Stmt stmt, Map<String, String> substitutions) {
+    return Arrays.stream(stmt.getFormula().getSym())
+        .map(
+            sym -> {
+              if (!(sym instanceof Var)) return sym.toString();
+              return substitutions.getOrDefault(sym.toString(), sym.toString());
+            })
+        .collect(Collectors.joining(" "));
   }
 
   private static String getDummyVariablesHeader(List<Var> dummyVariables) {

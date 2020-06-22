@@ -83,7 +83,7 @@ public class ProofCompressor {
       }
     }
     ResourcePointer compressedArgPtr =
-        ResourcePointer.ephemeral(ARGUMENT, proposition.getAssrt().getLabel());
+        ResourcePointer.ephemeral(ARGUMENT, ParseNodeHelpers.getLabel(proposition.getAssrt()));
     return new MetamathArgument(compressedArgPtr, proposition, newArgumentSteps);
   }
 

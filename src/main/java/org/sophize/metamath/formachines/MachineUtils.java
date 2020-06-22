@@ -7,12 +7,17 @@ import org.sophize.datamodel.MachineResponse;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.datamodel.ResourceType;
 import org.sophize.datamodel.TruthValue;
+import org.sophize.metamath.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
+import static org.sophize.datamodel.ResourceType.ARGUMENT;
 import static org.sophize.metamath.Utils.getLookupTermsForParseNode;
 
 public class MachineUtils {
@@ -32,6 +37,11 @@ public class MachineUtils {
   }
 
   public static List<String> getLookupTerms(String statement, String dbName) {
+    var parsed = parseStatement(statement, dbName);
+    return parsed == null ? null : getLookupTermsForParseNode(parsed);
+  }
+
+  public static ParseNode parseStatement(String statement, String dbName) {
     Grammar grammar = Databases.getGrammar(dbName);
 
     String[] tokens = statement.split(" ");
@@ -44,21 +54,20 @@ public class MachineUtils {
     }
 
     Formula formula = new Formula(symList);
-    ParseTree tree = grammar.parseFormulaWithoutSafetyNet(formula, new Hyp[0], 400000000);
-    return getLookupTermsForParseNode(tree.getRoot());
+    ParseTree tree = null;
+    try {
+      tree = grammar.parseFormulaWithoutSafetyNet(formula, new Hyp[0], 400000000);
+    } catch (Exception e) {
+    }
+    return tree == null ? null : tree.getRoot();
   }
 
-  public static String[] tokenizeString(String s) {
-    if (s == null) return new String[0];
-    return s.trim().split("\\s+");
-  }
-
-  public static String[] stripMarker(String[] tokens) {
-    if (tokens == null
-        || tokens.length < 2
-        || !tokens[0].equals("$p")
-        || !(tokens[tokens.length - 1].equals("$."))) return tokens;
-    return Arrays.copyOfRange(tokens, 1, tokens.length - 1);
+  public static String stripPropositionMarker(String statement) {
+    if (statement == null) return null;
+    statement = statement.trim();
+    if (statement.startsWith("$p") && statement.endsWith("$."))
+      return statement.substring(2, statement.length() - 4).trim();
+    return statement;
   }
 
   public static List<Integer> getDigitsLenient(String s) {
@@ -76,6 +85,38 @@ public class MachineUtils {
     response.setTruthValue(value);
     response.setMessage(message);
     return response;
+  }
+
+  public static MachineProof getProofForAssrt(
+      MetamathProposition prop,
+      StepCreationHints hints,
+      Assrt assrt,
+      Map<String, String> substitutions) {
+    var stepNodes = getNodesForHypAndAssert(assrt, substitutions);
+
+    var newArg = argumentFromStepParseNodes(stepNodes, hints, prop);
+    return new MachineProof(
+        newArg.getGeneratedPremises(),
+        Map.of(prop.getResourcePtr(), newArg),
+        newArg.getMachineArguments());
+  }
+
+  private static List<ParseNode> getNodesForHypAndAssert(
+      Assrt assrt, Map<String, String> substitutions) {
+    return Stream.concat(Arrays.stream(assrt.getLogHypArray()), Stream.of(assrt))
+        .map(
+            stmt ->
+                MachineUtils.parseStatement(
+                    Utils.getStatementWithSubstitutions(stmt, substitutions), SET_DB))
+        .collect(toList());
+  }
+
+  private static MetamathArgument argumentFromStepParseNodes(
+      List<ParseNode> stepNodes, StepCreationHints hints, MetamathProposition prop) {
+    var steps = hints.getSteps(stepNodes);
+    var newArgumentPtr =
+        ResourcePointer.ephemeral(ARGUMENT, ParseNodeHelpers.getLabel(prop.getAssrt()));
+    return new MetamathArgument(newArgumentPtr, prop, steps);
   }
 
   private MachineUtils() {}

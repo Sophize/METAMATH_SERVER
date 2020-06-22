@@ -1,13 +1,12 @@
 package org.sophize.metamath.formachines.machines;
 
 import com.google.common.base.Preconditions;
+import mmj.lang.ParseNode;
 import mmj.lang.Stmt;
 import org.sophize.datamodel.Language;
 import org.sophize.datamodel.Proposition;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.formachines.*;
-import org.sophize.metamath.formachines.MetamathProposition;
-import org.sophize.metamath.formachines.propositions.NN0Statement;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -17,8 +16,6 @@ import java.util.stream.Stream;
 
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
 import static org.sophize.metamath.formachines.MachineUtils.getDigitsLenient;
-import static org.sophize.metamath.formachines.PropositionFactory.NN0Proposition;
-import static org.sophize.metamath.formachines.PropositionFactory.NNProposition;
 
 public class NN0Machine extends MetamathMachine {
   private static NN0Machine instance = new NN0Machine();
@@ -63,24 +60,23 @@ public class NN0Machine extends MetamathMachine {
     return "20";
   }
 
-  public MetamathProposition parseStrict(@Nonnull Proposition proposition) {
-    return parseNumBelongsToSetStatement(proposition, "NN0");
-  }
-
   public MetamathProposition parseLenient(@Nonnull Proposition proposition) {
-    try {
-      List<Integer> digits = getDigitsLenient(proposition.getStatement());
-      if (digits == null) return null;
-      return NN0Proposition(NumberRepresentation.fromDigits(digits));
-    } catch (Exception e) {
-      return null;
-    }
+    var number = NumberRepresentation.fromDigits(getDigitsLenient(proposition.getStatement()));
+    if (number == null) return null;
+    proposition.setStatement("|- " + number + " e. NN");
+    return null;
   }
 
   public String getNotProvableReason(MetamathProposition proposition) {
-    if (!(proposition.getAssrt() instanceof NN0Statement))
-      return "This machine doesn't prove such statements";
-    var numeral = ((NN0Statement) proposition.getAssrt()).getNumeral();
+    ParseNode assrt = proposition.getAssrt();
+    String doesntHandleReason = "This machine doesn't handle such statements";
+    if (!assrt.stmt.getLabel().equals("wcel")) return doesntHandleReason;
+    if (assrt.child.length != 2) return doesntHandleReason;
+
+    if (!assrt.child[1].stmt.getLabel().equals("cn0")) return doesntHandleReason;
+    var numeral = NumberRepresentation.fromParseNode(assrt.child[0]);
+    if (numeral == null) return doesntHandleReason;
+
     if (numeral.number < 0) return "Provided number is negative";
     if (numeral.leadingZeros != 0) return "Machine doesn't handle leading zeros yet.";
     return null;
@@ -88,8 +84,8 @@ public class NN0Machine extends MetamathMachine {
 
   public MachineProof getProof(MetamathProposition proposition) {
     if (getNotProvableReason(proposition) != null) return null;
-    var nn0Statement = (NN0Statement) proposition.getAssrt();
-    var numeral = nn0Statement.getNumeral();
+    ParseNode assrt = proposition.getAssrt();
+    var numeral = NumberRepresentation.fromParseNode(assrt.child[0]);
 
     if (numeral.number <= 10 && !numeral.decimalFormat) {
       return new MachineProof(safeUse(primitiveStatementPtr(numeral.number)));
@@ -116,27 +112,9 @@ public class NN0Machine extends MetamathMachine {
       ArgumentStep step = ArgumentStep.fromSetMM(safeUse(CLOSURE), hypIndices, substitutions);
       steps.add(step);
     }
-    var argPtr = ResourcePointer.ephemeral(ARGUMENT, proposition.getAssrt().getLabel());
+    var argPtr = ResourcePointer.ephemeral(ARGUMENT, ParseNodeHelpers.getLabel(assrt));
     var arg = new MetamathArgument(argPtr, proposition, steps);
     return new MachineProof(List.of(), Map.of(proposition.getResourcePtr(), arg), Map.of());
-  }
-
-  static MetamathProposition parseNumBelongsToSetStatement(
-      @Nonnull Proposition proposition, String setName) {
-    if (proposition.getLanguage() != Language.METAMATH_SET_MM) return null;
-    String statement = proposition.getStatement();
-    String[] tokens = MachineUtils.tokenizeString(statement);
-    tokens = MachineUtils.stripMarker(tokens);
-    if (tokens == null || tokens.length < 3) return null;
-    if (!tokens[tokens.length - 1].equals(setName) || tokens[tokens.length - 2].equals("e.")) {
-      return null;
-    }
-    var number = NumberRepresentation.fromTokens(Arrays.copyOf(tokens, tokens.length - 1));
-
-    if (setName.equals("NN0")) return NN0Proposition(number);
-    else if (setName.equals("NN")) return NNProposition(number);
-
-    throw new IllegalStateException("Shouldn't happen");
   }
 
   private static Stmt primitiveStatementPtr(long number) {

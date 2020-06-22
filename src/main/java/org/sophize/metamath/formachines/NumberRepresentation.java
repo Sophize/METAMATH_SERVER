@@ -1,5 +1,7 @@
 package org.sophize.metamath.formachines;
 
+import mmj.lang.ParseNode;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +31,30 @@ public class NumberRepresentation {
 
   public NumberRepresentation(long number, boolean decimalFormat) {
     this(number, decimalFormat, 0);
+  }
+
+  public static NumberRepresentation fromParseNode(ParseNode node) {
+    if (node == null) return null;
+    String label = node.stmt.getLabel();
+    if (label.equals("cdc")) {
+      if (node.child.length != 2) return null;
+      NumberRepresentation child0 = NumberRepresentation.fromParseNode(node.child[0]);
+      NumberRepresentation child1 = NumberRepresentation.fromParseNode(node.child[1]);
+      if (child0 == null || child1 == null) return null;
+      if (child1.number >= 10) return null; // We dont handle these unorthodox numbers;
+      int leadingZeros = child0.leadingZeros;
+      if (child0.number == 0) leadingZeros++;
+      return new NumberRepresentation(child0.number * 10 + child1.number, true, leadingZeros);
+    }
+
+    if(label.equals("cc0")) return new NumberRepresentation(0);
+    if (!label.startsWith("c")) return null;
+    try {
+      return new NumberRepresentation(Integer.parseInt(label.substring(1)), false);
+    } catch (Exception e) {
+    }
+
+    return null;
   }
 
   public static NumberRepresentation fromTokens(String[] tokens) {
