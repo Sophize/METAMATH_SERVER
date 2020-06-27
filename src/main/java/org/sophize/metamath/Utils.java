@@ -108,6 +108,13 @@ public class Utils {
         .collect(Collectors.joining(" "));
   }
 
+  public static String getStatementWithSubstitutions(
+      String stmt, Map<String, String> substitutions) {
+    return Arrays.stream(stmt.split(" "))
+        .map(sym -> substitutions.getOrDefault(sym, sym))
+        .collect(Collectors.joining(" "));
+  }
+
   private static String getDummyVariablesHeader(List<Var> dummyVariables) {
     if (dummyVariables == null || dummyVariables.isEmpty()) return "";
     return dummyVariables.stream().map(Var::getId).collect(Collectors.joining(" ")) + "\n";

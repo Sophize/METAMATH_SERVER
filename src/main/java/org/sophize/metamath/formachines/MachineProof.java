@@ -23,7 +23,7 @@ public class MachineProof {
   final Map<ResourcePointer, MetamathArgument> arguments;
   // Conclusion Pointer to machine that can be used to get the rest of the proof.
   final Map<ResourcePointer, MetamathMachine> fromMachineArguments;
-  final ResourcePointer existingProposition;
+  final Stmt existingProposition;
 
   public MachineProof(
       Map<ResourcePointer, MetamathProposition> propositions,
@@ -53,8 +53,7 @@ public class MachineProof {
     this.propositions = Collections.emptyMap();
     this.arguments = Collections.emptyMap();
     this.fromMachineArguments = Collections.emptyMap();
-    this.existingProposition =
-        ResourcePointer.assignable(ResourceType.PROPOSITION, stmt.getLabel());
+    this.existingProposition = stmt;
   }
 
   Proposition[] getPropositions() {
@@ -71,8 +70,10 @@ public class MachineProof {
         .toArray(Argument[]::new);
   }
 
-  ResourcePointer getExistingProposition() {
-    return existingProposition;
+  ResourcePointer getExistingPropositionPtr() {
+    return existingProposition == null
+        ? null
+        : ResourcePointer.assignable(ResourceType.PROPOSITION, existingProposition.getLabel());
   }
 
   private static Argument toPremiseMachineArgument(ResourcePointer ptr, MetamathMachine machine) {

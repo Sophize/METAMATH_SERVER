@@ -1,5 +1,6 @@
 package org.sophize.metamath.formachines;
 
+import com.google.common.base.Preconditions;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.formachines.machines.MetamathMachine;
 
@@ -13,7 +14,9 @@ class MachineProofExpander {
 
   private static final int MAX_EXPANSIONS = 100;
 
-  static MachineProof expand(MachineProof machineProof) {
+  static MachineProof expand(MachineProof machineProof, MetamathProposition resolvedProposition) {
+    if (machineProof.existingProposition != null) return machineProof;
+
     Queue<Map.Entry<ResourcePointer, MetamathMachine>> pending =
         new ArrayDeque<>(machineProof.fromMachineArguments.entrySet());
     Map<ResourcePointer, MetamathArgument> expanded = new HashMap<>(machineProof.arguments);
@@ -45,7 +48,7 @@ class MachineProofExpander {
         expanded.remove(conclusionPtr);
         for (var expandedEntry : expanded.entrySet()) {
           var metamathArg = expandedEntry.getValue();
-          var updated = metamathArg.replace(conclusionPtr, subProof.existingProposition);
+          var updated = metamathArg.replace(conclusionPtr, subProof.getExistingPropositionPtr());
           expanded.put(expandedEntry.getKey(), updated);
         }
       }

@@ -1,9 +1,7 @@
 package org.sophize.metamath.formachines;
 
-import mmj.lang.LogicalSystem;
-import mmj.lang.Messages;
-import mmj.lang.Stmt;
-import mmj.lang.WorkVarManager;
+import com.google.common.base.Preconditions;
+import mmj.lang.*;
 import mmj.pa.ProofAsst;
 import mmj.pa.ProofAsstPreferences;
 import mmj.tl.TheoremLoader;
@@ -53,6 +51,20 @@ public class Databases {
   }
 
   public static Stmt getSetMMStmt(String label) {
-    return grammars.get(SET_DB).stmtTbl.get(label);
+    Stmt stmt = grammars.get(SET_DB).stmtTbl.get(label);
+    Preconditions.checkArgument(stmt != null);
+    return stmt;
+  }
+
+  public static Var getSetMMVar(String varName) {
+    Sym sym = grammars.get(SET_DB).symTbl.get(varName);
+    Preconditions.checkArgument(sym instanceof Var);
+    return (Var) sym;
+  }
+
+  public static Assrt getSetMMAssrt(String label) {
+    var stmt = getSetMMStmt(label);
+    Preconditions.checkArgument(stmt instanceof Assrt);
+    return (Assrt) stmt;
   }
 }

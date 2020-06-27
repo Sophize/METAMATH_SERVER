@@ -11,7 +11,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -68,7 +67,10 @@ public class SpringbootApplication {
       parsed = m.parseLenient(request.getProposition());
     }
     if (parsed == null) {
-      return MachineUtils.responseWithMessage(UNKNOWN, "Couldn't understand the provided input.");
+      String reason = "The provided expression doesn't parse.";
+      if (Utils.isTrue(request.getTryCompletingProposition()))
+        reason = "Couldn't understand the input.";
+      return MachineUtils.responseWithMessage(UNKNOWN, reason);
     }
     String notProvableJustification = m.getNotProvableReason(parsed);
     if (notProvableJustification != null) {
@@ -79,8 +81,9 @@ public class SpringbootApplication {
     }
 
     MachineProof proof = m.getProof(parsed);
+    proof = new ProofCompressor(MachineProofExpander.expand(proof, parsed)).compress(parsed);
 
-    var existingPropositionPtr = proof.getExistingProposition();
+    var existingPropositionPtr = proof.getExistingPropositionPtr();
     MachineResponse response = new MachineResponse();
     response.setTruthValue(TruthValue.TRUE);
     if (existingPropositionPtr != null) {
@@ -90,7 +93,6 @@ public class SpringbootApplication {
     response.setResolvedProposition(parsed.toProposition());
     if (!isTrue(request.getFetchProof())) return response;
 
-    proof = new ProofCompressor(MachineProofExpander.expand(proof)).compress(parsed);
     response.setProofPropositions(proof.getPropositions());
     response.setProofArguments(proof.getArguments());
     return response;

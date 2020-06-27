@@ -34,6 +34,17 @@ public class StepCreationHints {
         machineDeterminer);
   }
 
+  public static StepCreationHints forAllGeneratedPremises(
+      MetamathProposition proposition,
+      Map<String, String> substitutions,
+      Function<ParseNode, MetamathMachine> machineDeterminer) {
+    return new StepCreationHints(
+        Map.of(
+            proposition.getLogHypArray().size(),
+            ArgumentStep.finalStepForArgument(proposition, substitutions)),
+        machineDeterminer);
+  }
+
   public List<ArgumentStep> getSteps(List<ParseNode> argumentStepNodes) {
     return IntStream.range(0, argumentStepNodes.size())
         .mapToObj(stepIndex -> getArgumentStep(stepIndex, argumentStepNodes.get(stepIndex)))
@@ -47,6 +58,6 @@ public class StepCreationHints {
     Preconditions.checkArgument(
         metamathMachine != null, "couldn't find machine for: " + node.toString());
     return ArgumentStep.fromEphemeralReference(
-        new MetamathProposition(node, List.of(), List.of()), metamathMachine);
+        new MetamathProposition(node), metamathMachine);
   }
 }
