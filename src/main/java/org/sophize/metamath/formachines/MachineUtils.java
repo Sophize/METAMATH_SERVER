@@ -94,7 +94,7 @@ public class MachineUtils {
 
   public static MachineProof getProofForAssrt(
       MetamathProposition prop,
-      StepCreationHints hints,
+      StepFactory hints,
       Assrt assrt,
       Map<String, String> substitutions) {
     var stepNodes = getNodesForHypAndAssert(assrt, substitutions);
@@ -117,7 +117,7 @@ public class MachineUtils {
   }
 
   private static MetamathArgument argumentFromStepParseNodes(
-      List<ParseNode> stepNodes, StepCreationHints hints, MetamathProposition prop) {
+          List<ParseNode> stepNodes, StepFactory hints, MetamathProposition prop) {
     var steps = hints.getSteps(stepNodes);
     var newArgumentPtr = ResourcePointer.ephemeral(ARGUMENT, prop.getResourcePtr().getId());
     return new MetamathArgument(newArgumentPtr, prop, steps);

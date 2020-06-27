@@ -87,12 +87,7 @@ public class MetamathArgument {
     return steps.stream()
         .filter(step -> step.machineForProof != null)
         .limit(steps.size() - 1) // Skip the last step - the conclusion
-        .map(
-            step ->
-                new MetamathProposition(
-                    MachineUtils.parseStatement(step.expression, MachineUtils.SET_DB),
-                    List.of(),
-                    List.of()))
+        .map(step -> new MetamathProposition(MachineUtils.parseSetMMStatement(step.expression)))
         .collect(toList());
   }
 

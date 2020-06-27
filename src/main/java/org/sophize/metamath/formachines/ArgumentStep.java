@@ -8,6 +8,7 @@ import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.Utils;
 import org.sophize.metamath.formachines.machines.MetamathMachine;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -57,7 +58,7 @@ public class ArgumentStep {
     } else {
       lookupTerms = getLookupTermsForParseNode(proposition.getAssrt());
     }
-    
+
     return new ArgumentStep(
         hypIndices, proposition.getResourcePtr(), "", expression, lookupTerms, machineForProof);
   }
@@ -118,5 +119,12 @@ public class ArgumentStep {
   String referenceForArgument() {
     if (reference != null) return reference.toString();
     return hypothesis;
+  }
+
+  @Override
+  public String toString() {
+    String indices = hypIndices.stream().map(Object::toString).collect(Collectors.joining(", "));
+    return MessageFormat.format(
+        "{0} [{1}] {2}", hypothesis == null ? reference : hypothesis, indices, expression);
   }
 }

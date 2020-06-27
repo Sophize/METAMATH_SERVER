@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -149,7 +148,7 @@ public class LessThanMachine extends MetamathMachine {
     var decltiSubstitutions = Map.of("A", a.toString(), "B", b.toString(), "C", c.toString());
 
     var hints =
-        StepCreationHints.forAllGeneratedPremises(
+        StepFactory.forArgumentWithGeneratedPremises(
             DECLTI, decltiSubstitutions, LessThanMachine::machineDeterminer);
     return getProofForAssrt(prop, hints, (Assrt) safeUse(DECLTI), decltiSubstitutions);
   }
@@ -170,8 +169,8 @@ public class LessThanMachine extends MetamathMachine {
             "R",
             LESS_THAN_SYMBOL);
 
-    StepCreationHints hints =
-        new StepCreationHints(
+    StepFactory hints =
+        new StepFactory(
             Map.of(
                 0,
                 ArgumentStep.fromSetMM(safeUse(DEC10)),
@@ -196,7 +195,7 @@ public class LessThanMachine extends MetamathMachine {
         Map.of("A", a.toString(), "B", b.toString(), "C", c.toString(), "D", d.toString());
 
     var hints =
-        StepCreationHints.forAllGeneratedPremises(
+        StepFactory.forArgumentWithGeneratedPremises(
             DECLTC, decltcSubstitutions, LessThanMachine::machineDeterminer);
 
     return getProofForAssrt(prop, hints, (Assrt) safeUse(DECLTC), decltcSubstitutions);
@@ -214,7 +213,7 @@ public class LessThanMachine extends MetamathMachine {
     var decltSubstitutions = Map.of("A", a.toString(), "B", b.toString(), "C", c.toString());
 
     var hints =
-        StepCreationHints.forAllGeneratedPremises(
+        StepFactory.forArgumentWithGeneratedPremises(
             DECLT, decltSubstitutions, LessThanMachine::machineDeterminer);
     return getProofForAssrt(prop, hints, (Assrt) safeUse(DECLT), decltSubstitutions);
   }
