@@ -60,6 +60,7 @@ public class NNMachine extends MetamathMachine {
   public MetamathProposition parseLenient(@Nonnull Proposition proposition) {
     var number = NumberRepresentation.fromDigits(getDigitsLenient(proposition.getStatement()));
     if (number == null) return null;
+    proposition.setLanguage(Language.METAMATH_SET_MM);
     proposition.setStatement("|- " + number + " e. NN");
     return parseStrict(proposition);
   }
@@ -116,7 +117,7 @@ public class NNMachine extends MetamathMachine {
       }
       steps.add(step);
     }
-    var argPtr = ResourcePointer.ephemeral(ARGUMENT, ParseNodeHelpers.getLabel(assrt));
+    var argPtr = ResourcePointer.ephemeral(ARGUMENT, proposition.getResourcePtr().getId());
     var arg = new MetamathArgument(argPtr, proposition, steps);
     return new MachineProof(List.of(), Map.of(proposition.getResourcePtr(), arg), Map.of());
   }

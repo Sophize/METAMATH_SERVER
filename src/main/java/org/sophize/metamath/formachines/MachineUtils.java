@@ -41,7 +41,7 @@ public class MachineUtils {
     return parsed == null ? null : getLookupTermsForParseNode(parsed);
   }
 
-  public static ParseNode parseStatement(String statement, String dbName) {
+  public static ParseNode parseStatement(String statement, String dbName, VarHyp[] hyps) {
     Grammar grammar = Databases.getGrammar(dbName);
 
     String[] tokens = statement.split(" ");
@@ -54,12 +54,17 @@ public class MachineUtils {
     }
 
     Formula formula = new Formula(symList);
-    ParseTree tree = null;
-    try {
-      tree = grammar.parseFormulaWithoutSafetyNet(formula, new Hyp[0], 400000000);
-    } catch (Exception e) {
-    }
-    return tree == null ? null : tree.getRoot();
+    ParseTree tree = grammar.parseFormulaWithoutSafetyNet(formula, hyps, 400000000);
+    if (tree == null) throw new IllegalStateException("Couldn't parse: " + statement);
+    return tree.getRoot();
+  }
+
+  public static ParseNode parseSetMMStatement(String statement) {
+    return parseSetMMStatement(statement, new VarHyp[] {(VarHyp) Databases.getSetMMStmt("cN")});
+  }
+
+  public static ParseNode parseSetMMStatement(String statement, VarHyp[] hyps) {
+    return parseStatement(statement, SET_DB, hyps);
   }
 
   public static String stripPropositionMarker(String statement) {
@@ -93,7 +98,7 @@ public class MachineUtils {
       Assrt assrt,
       Map<String, String> substitutions) {
     var stepNodes = getNodesForHypAndAssert(assrt, substitutions);
-
+    Preconditions.checkArgument(stepNodes.stream().allMatch(Objects::nonNull));
     var newArg = argumentFromStepParseNodes(stepNodes, hints, prop);
     return new MachineProof(
         newArg.getGeneratedPremises(),
@@ -114,8 +119,7 @@ public class MachineUtils {
   private static MetamathArgument argumentFromStepParseNodes(
       List<ParseNode> stepNodes, StepCreationHints hints, MetamathProposition prop) {
     var steps = hints.getSteps(stepNodes);
-    var newArgumentPtr =
-        ResourcePointer.ephemeral(ARGUMENT, ParseNodeHelpers.getLabel(prop.getAssrt()));
+    var newArgumentPtr = ResourcePointer.ephemeral(ARGUMENT, prop.getResourcePtr().getId());
     return new MetamathArgument(newArgumentPtr, prop, steps);
   }
 

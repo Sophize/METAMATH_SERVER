@@ -2,6 +2,7 @@ package org.sophize.metamath.formachines.machines;
 
 import com.google.common.base.Preconditions;
 import mmj.lang.Stmt;
+import mmj.lang.VarHyp;
 import org.sophize.datamodel.*;
 import org.sophize.metamath.formachines.MachineProof;
 import org.sophize.metamath.formachines.MachineUtils;
@@ -34,9 +35,9 @@ public abstract class MetamathMachine {
   public MetamathProposition parseStrict(Proposition proposition) {
     if (proposition.getLanguage() != Language.METAMATH_SET_MM) return null;
     String statement = MachineUtils.stripPropositionMarker(proposition.getStatement());
-    var parsedStmt = MachineUtils.parseStatement(statement, MachineUtils.SET_DB);
+    var parsedStmt = MachineUtils.parseStatement(statement, MachineUtils.SET_DB, new VarHyp[0]);
     if (parsedStmt == null) return null;
-    return new MetamathProposition(parsedStmt, List.of(), List.of());
+    return new MetamathProposition(parsedStmt);
   }
 
   public abstract MetamathProposition parseLenient(Proposition proposition);

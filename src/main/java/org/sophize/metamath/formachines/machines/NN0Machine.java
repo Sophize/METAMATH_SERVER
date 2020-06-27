@@ -59,8 +59,9 @@ public class NN0Machine extends MetamathMachine {
   public MetamathProposition parseLenient(@Nonnull Proposition proposition) {
     var number = NumberRepresentation.fromDigits(getDigitsLenient(proposition.getStatement()));
     if (number == null) return null;
+    proposition.setLanguage(Language.METAMATH_SET_MM);
     proposition.setStatement("|- " + number + " e. NN");
-    return null;
+    return parseStrict(proposition);
   }
 
   public String getNotProvableReason(MetamathProposition proposition) {
@@ -108,7 +109,7 @@ public class NN0Machine extends MetamathMachine {
       ArgumentStep step = ArgumentStep.fromSetMM(safeUse(CLOSURE), hypIndices, substitutions);
       steps.add(step);
     }
-    var argPtr = ResourcePointer.ephemeral(ARGUMENT, ParseNodeHelpers.getLabel(assrt));
+    var argPtr = ResourcePointer.ephemeral(ARGUMENT, proposition.getResourcePtr().getId());
     var arg = new MetamathArgument(argPtr, proposition, steps);
     return new MachineProof(List.of(), Map.of(proposition.getResourcePtr(), arg), Map.of());
   }
