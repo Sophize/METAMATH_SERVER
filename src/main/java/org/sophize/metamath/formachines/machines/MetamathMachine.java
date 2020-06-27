@@ -19,8 +19,6 @@ public abstract class MetamathMachine {
 
   public abstract boolean isIndexable();
 
-  public abstract Language getDefaultLanguage();
-
   public abstract String getDefaultStrictStatement();
 
   public abstract String getDefaultLenientStatement();
@@ -28,6 +26,10 @@ public abstract class MetamathMachine {
   public abstract List<Stmt> getPremisePropositions();
 
   public abstract List<ResourcePointer> getPremiseMachines();
+
+  public Language getDefaultLanguage() {
+    return Language.METAMATH_SET_MM;
+  }
 
   public MetamathProposition parseStrict(Proposition proposition) {
     if (proposition.getLanguage() != Language.METAMATH_SET_MM) return null;

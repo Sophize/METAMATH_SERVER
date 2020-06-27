@@ -41,10 +41,6 @@ public class NNMachine extends MetamathMachine {
     return true;
   }
 
-  public Language getDefaultLanguage() {
-    return Language.METAMATH_SET_MM;
-  }
-
   public String getDefaultStrictStatement() {
     return "|- ; 2 1 e. NN";
   }

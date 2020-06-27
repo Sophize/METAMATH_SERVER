@@ -48,10 +48,6 @@ public class NN0Machine extends MetamathMachine {
     return List.of();
   }
 
-  public Language getDefaultLanguage() {
-    return Language.METAMATH_SET_MM;
-  }
-
   public String getDefaultStrictStatement() {
     return "|- ; 2 0 e. NN0";
   }

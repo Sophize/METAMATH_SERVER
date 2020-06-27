@@ -4,7 +4,6 @@ import com.google.common.base.Preconditions;
 import mmj.lang.Assrt;
 import mmj.lang.ParseNode;
 import mmj.lang.Stmt;
-import org.sophize.datamodel.Language;
 import org.sophize.datamodel.Proposition;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.formachines.*;
@@ -59,10 +58,6 @@ public class LessThanMachine extends MetamathMachine {
 
   public boolean isIndexable() {
     return true;
-  }
-
-  public Language getDefaultLanguage() {
-    return Language.METAMATH_SET_MM;
   }
 
   public String getDefaultStrictStatement() {
