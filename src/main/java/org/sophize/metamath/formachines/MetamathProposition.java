@@ -18,12 +18,29 @@ public class MetamathProposition {
   private final ParseNode assrt;
   private final List<ParseNode> logHypArray;
   private final List<List<Var>> distinctVars;
+  private final String assertLabel;
+  private final List<String> hypLabels;
 
   public MetamathProposition(
-      ParseNode assrt, List<ParseNode> logHypArray, List<List<Var>> distinctVars) {
+      ParseNode assrt,
+      List<ParseNode> logHypArray,
+      String assertLabel,
+      List<String> hypLabels,
+      List<List<Var>> distinctVars) {
     this.assrt = assrt;
     this.logHypArray = logHypArray;
+    this.assertLabel = assertLabel;
+    this.hypLabels = hypLabels;
     this.distinctVars = distinctVars;
+  }
+
+  public MetamathProposition(ParseNode assrt) {
+    this.assrt = assrt;
+    this.logHypArray = List.of();
+    this.distinctVars = List.of();
+    this.assertLabel = ParseNodeHelpers.getLabel(assrt);
+    this.hypLabels =
+        logHypArray.stream().map(ParseNodeHelpers::getLabel).collect(Collectors.toList());
   }
 
   public List<ParseNode> getLogHypArray() {
@@ -39,7 +56,7 @@ public class MetamathProposition {
   }
 
   public final ResourcePointer getResourcePtr() {
-    return ResourcePointer.ephemeral(ResourceType.PROPOSITION, ParseNodeHelpers.getLabel(getAssrt()));
+    return ResourcePointer.ephemeral(ResourceType.PROPOSITION, assertLabel);
   }
 
   final Proposition toProposition() {
@@ -55,10 +72,11 @@ public class MetamathProposition {
 
   private String getStatement() {
     List<String> stmtStrings = new ArrayList<>();
-    for (ParseNode hyp : getLogHypArray()) {
-      stmtStrings.add(ParseNodeHelpers.asString(hyp, LOG_HYP_START_TAG));
+    for (int i = 0; i < logHypArray.size(); i++) {
+      ParseNode hyp = logHypArray.get(i);
+      stmtStrings.add(ParseNodeHelpers.asString(hyp, hypLabels.get(i), LOG_HYP_START_TAG));
     }
-    stmtStrings.add(ParseNodeHelpers.asString(getAssrt(), ASSRT_START_TAG));
+    stmtStrings.add(ParseNodeHelpers.asString(assrt, assertLabel, ASSRT_START_TAG));
     stmtStrings.add(distinctVarsStatement());
     return stmtStrings.stream().filter(s -> !s.isEmpty()).collect(Collectors.joining("\n"));
   }

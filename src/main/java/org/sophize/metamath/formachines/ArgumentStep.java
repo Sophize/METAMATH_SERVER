@@ -50,7 +50,7 @@ public class ArgumentStep {
       List<Integer> hypIndices,
       Map<String, String> substitutions) {
     // TODO: input actual hypothesis and verify/compute substitutions.
-    String expression = ParseNodeHelpers.asStatement(proposition.getAssrt(), "|-");
+    String expression = ParseNodeHelpers.asStatement(proposition.getAssrt());
     List<String> lookupTerms;
     if (!substitutions.isEmpty()) {
       expression = Utils.getStatementWithSubstitutions(expression, substitutions);
