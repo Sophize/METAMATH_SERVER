@@ -6,7 +6,6 @@ import mmj.lang.ParseNode;
 import mmj.lang.Stmt;
 import org.sophize.datamodel.Language;
 import org.sophize.datamodel.Proposition;
-import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.formachines.*;
 
 import javax.annotation.Nonnull;
@@ -49,8 +48,8 @@ public class CCClosureMachine extends MetamathMachine {
   }
 
   @Override
-  public List<ResourcePointer> getPremiseMachines() {
-    return List.of(SumProductExpressionMachine.getInstance().getAssignablePtr());
+  public List<MetamathMachine> getPremiseMachines() {
+    return List.of(NN0ClosureMachine.getInstance());
   }
 
   @Override
@@ -98,7 +97,7 @@ public class CCClosureMachine extends MetamathMachine {
     var substitutions = Map.of("A", numeral.toString());
     var stepFactory =
         StepFactory.forArgumentWithGeneratedPremises(
-            NN0CNI, substitutions, unused -> NN0ClosureMachine.getInstance());
+            NN0CNI, substitutions, unused -> safeUse(NN0ClosureMachine.getInstance()));
     return getProofForAssrt(prop, stepFactory, NN0CNI, substitutions);
   }
 

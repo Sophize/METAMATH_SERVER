@@ -5,7 +5,6 @@ import mmj.lang.Assrt;
 import mmj.lang.ParseNode;
 import mmj.lang.Stmt;
 import org.sophize.datamodel.Proposition;
-import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.formachines.*;
 
 import javax.annotation.Nonnull;
@@ -76,10 +75,8 @@ public class LessThanMachine extends MetamathMachine {
   }
 
   @Override
-  public List<ResourcePointer> getPremiseMachines() {
-    return List.of(
-        NNClosureMachine.getInstance().getAssignablePtr(),
-        NN0ClosureMachine.getInstance().getAssignablePtr());
+  public List<MetamathMachine> getPremiseMachines() {
+    return List.of(NNClosureMachine.getInstance(), NN0ClosureMachine.getInstance());
   }
 
   @Override
@@ -168,11 +165,9 @@ public class LessThanMachine extends MetamathMachine {
             Map.entry("R", "<"));
 
     // 1st step is |- 10 = ; 1 0 (dec10). We don't want the factory to treat this as an ephemeral
-    // proposition and try to assign a machine. So we provide this step explicitly.
+    // proposition and try to assign a machine. So, this step explicitly provided.
     StepFactory stepFactory =
-        new StepFactory(
-            Map.of(0, ArgumentStep.fromSetMM(safeUse(DEC10))), LessThanMachine::machineDeterminer);
-
+        new StepFactory(Map.of(0, ArgumentStep.fromSetMM(safeUse(DEC10))), this::machineDeterminer);
     return getProofForAssrt(prop, stepFactory, (Assrt) safeUse(EQBRTRI), eqbrtriSubstitutions);
   }
 
@@ -218,18 +213,19 @@ public class LessThanMachine extends MetamathMachine {
   private MachineProof getProofOfAssrt(
       MetamathProposition proposition, Assrt assrt, Map<String, String> substitutions) {
     var stepFactory =
-        StepFactory.forArgumentWithGeneratedPremises(
-            assrt, substitutions, LessThanMachine::machineDeterminer);
+        StepFactory.forArgumentWithGeneratedPremises(assrt, substitutions, this::machineDeterminer);
     return getProofForAssrt(proposition, stepFactory, (Assrt) safeUse(assrt), substitutions);
   }
 
-  private static MetamathMachine machineDeterminer(ParseNode node) {
+  private MetamathMachine machineDeterminer(ParseNode node) {
     if (node.stmt.getLabel().equals("wbr")) {
-      if (node.child[2].stmt.getLabel().equals("clt")) return LessThanMachine.getInstance();
+      var relationLabel = node.child[1].stmt.getLabel();
+      if (relationLabel.equals("clt")) return safeUse(LessThanMachine.getInstance());
     }
     if (node.stmt.getLabel().equals("wcel")) {
-      if (node.child[1].stmt.getLabel().equals("cn0")) return NN0ClosureMachine.getInstance();
-      if (node.child[1].stmt.getLabel().equals("cn")) return NNClosureMachine.getInstance();
+      var setLabel = node.child[1].stmt.getLabel();
+      if (setLabel.equals("cn0")) return safeUse(NN0ClosureMachine.getInstance());
+      if (setLabel.equals("cn")) return safeUse(NNClosureMachine.getInstance());
     }
     return null;
   }

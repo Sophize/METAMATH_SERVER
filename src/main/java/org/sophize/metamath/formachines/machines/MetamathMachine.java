@@ -15,6 +15,7 @@ import java.util.List;
 
 import static java.lang.Character.isLowerCase;
 import static java.lang.Character.isUpperCase;
+import static java.util.stream.Collectors.toList;
 import static org.sophize.datamodel.ResourcePointer.PointerType.ASSIGNABLE;
 import static org.sophize.datamodel.ResourceType.MACHINE;
 
@@ -33,7 +34,7 @@ public abstract class MetamathMachine {
 
   public abstract List<Stmt> getPremisePropositions();
 
-  public abstract List<ResourcePointer> getPremiseMachines();
+  public abstract List<MetamathMachine> getPremiseMachines();
 
   public abstract MetamathProposition parseLenient(Proposition proposition);
 
@@ -78,6 +79,8 @@ public abstract class MetamathMachine {
 
   public final Machine toDatamodel() {
     Machine machine = new Machine();
+    var premiseMachinePtrs =
+        getPremiseMachines().stream().map(MetamathMachine::getAssignablePtr).collect(toList());
     if (getPermanentPtr() != null) machine.setPermanentPtr(getAssignablePtr().toString());
     machine.setAssignablePtr(getAssignablePtr().toString());
     machine.setDefaultMaterializeDataset(DEFAULT_MATERIALIZE_DATASET);
@@ -85,7 +88,7 @@ public abstract class MetamathMachine {
     machine.setDefaultLanguage(getDefaultLanguage());
     machine.setDefaultStrictStatement(getDefaultStrictStatement());
     machine.setDefaultLenientStatement(getDefaultLenientStatement());
-    machine.setPremiseMachines(MachineUtils.toStringArray(getPremiseMachines()));
+    machine.setPremiseMachines(MachineUtils.toStringArray(premiseMachinePtrs));
     machine.setPremisePropositions(MachineUtils.toStringRefArray(getPremisePropositions()));
     machine.setServerName(METAMATH_SERVER_NAME);
     machine.setIndexable(isIndexable());
@@ -96,6 +99,11 @@ public abstract class MetamathMachine {
   final Stmt safeUse(Stmt stmt) {
     Preconditions.checkArgument(getPremisePropositions().contains(stmt));
     return stmt;
+  }
+
+  final MetamathMachine safeUse(MetamathMachine machine) {
+    Preconditions.checkArgument(machine == this || getPremiseMachines().contains(machine));
+    return machine;
   }
 
   private static String toSentenceCase(String s) {

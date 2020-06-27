@@ -6,7 +6,6 @@ import mmj.lang.ParseNode;
 import mmj.lang.Stmt;
 import org.sophize.datamodel.Language;
 import org.sophize.datamodel.Proposition;
-import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.formachines.*;
 
 import javax.annotation.Nonnull;
@@ -57,8 +56,8 @@ public class NNClosureMachine extends MetamathMachine {
   }
 
   @Override
-  public List<ResourcePointer> getPremiseMachines() {
-    return List.of(NNClosureMachine.getInstance().getAssignablePtr());
+  public List<MetamathMachine> getPremiseMachines() {
+    return List.of(NN0ClosureMachine.getInstance());
   }
 
   @Override
@@ -113,14 +112,15 @@ public class NNClosureMachine extends MetamathMachine {
 
     var stepFactory =
         StepFactory.forArgumentWithGeneratedPremises(
-            dbAssrt, substitutions, NNClosureMachine::machineDeterminer);
+            dbAssrt, substitutions, this::machineDeterminer);
     return getProofForAssrt(proposition, stepFactory, (Assrt) safeUse(dbAssrt), substitutions);
   }
 
-  private static MetamathMachine machineDeterminer(ParseNode node) {
+  private MetamathMachine machineDeterminer(ParseNode node) {
     if (node.stmt.getLabel().equals("wcel")) {
-      if (node.child[1].stmt.getLabel().equals("cn0")) return NN0ClosureMachine.getInstance();
-      if (node.child[1].stmt.getLabel().equals("cn")) return NNClosureMachine.getInstance();
+      var setLabel = node.child[1].stmt.getLabel();
+      if (setLabel.equals("cn0")) return safeUse(NN0ClosureMachine.getInstance());
+      if (setLabel.equals("cn")) return safeUse(NNClosureMachine.getInstance());
     }
     return null;
   }

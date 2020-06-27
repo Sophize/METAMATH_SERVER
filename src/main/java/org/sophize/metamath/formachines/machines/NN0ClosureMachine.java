@@ -44,7 +44,7 @@ public class NN0ClosureMachine extends MetamathMachine {
   }
 
   @Override
-  public List<ResourcePointer> getPremiseMachines() {
+  public List<MetamathMachine> getPremiseMachines() {
     return List.of();
   }
 
