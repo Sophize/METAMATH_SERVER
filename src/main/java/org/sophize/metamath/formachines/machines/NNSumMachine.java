@@ -1,7 +1,6 @@
 package org.sophize.metamath.formachines.machines;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Streams;
 import mmj.lang.Assrt;
 import mmj.lang.ParseNode;
 import mmj.lang.Stmt;
@@ -43,7 +42,7 @@ public class NNSumMachine extends MetamathMachine {
   private final Assrt ADDCOMLI = (Assrt) Databases.getSetMMStmt("addcomli");
 
   private final List<Stmt> PREMISE_PROPOSITIONS =
-      Streams.concat(
+      Stream.concat(
               Stream.of(DECADDI, DECADDCI, DECADD, DECADDC, EQID, EQTRI, OVEQ1I, ADDID1I, ADDCOMLI),
               LongStream.rangeClosed(1, 9)
                   .mapToObj(
@@ -219,30 +218,34 @@ public class NNSumMachine extends MetamathMachine {
 
   private MachineProof getDecimalAdditionProof(
       MetamathProposition prop, ParseNode operand1, ParseNode operand2) {
-    var substitutions = new HashMap<String, String>();
     var op1Value = getValue(operand1);
     var op2Value = getValue(operand2);
-    var a = op1Value.number / 10;
-    var b = op1Value.number % 10;
-    var c = op2Value.number / 10;
-    var d = op2Value.number % 10;
-
-    substitutions.put("A", new NumberRepresentation(a).toString());
-    substitutions.put("B", new NumberRepresentation(b).toString());
-    substitutions.put("C", new NumberRepresentation(c).toString());
-    substitutions.put("D", new NumberRepresentation(d).toString());
-    substitutions.put("M", asExpression(operand1));
-    substitutions.put("N", asExpression(operand2));
-
+    long a = op1Value.number / 10;
+    long b = op1Value.number % 10;
+    long c = op2Value.number / 10;
+    long d = op2Value.number % 10;
+    long e, f;
+    Assrt assrt;
     if (b + d >= 10) {
-      substitutions.put("E", new NumberRepresentation(a + c + 1).toString());
-      substitutions.put("F", new NumberRepresentation((b + d) % 10).toString());
-      return getProofOfAssrt(prop, DECADDC, substitutions);
+      e = a + c + 1;
+      f = (b + d) % 10;
+      assrt = DECADDC;
     } else {
-      substitutions.put("E", new NumberRepresentation(a + c).toString());
-      substitutions.put("F", new NumberRepresentation(b + d).toString());
-      return getProofOfAssrt(prop, DECADD, substitutions);
+      e = a + c;
+      f = b + d;
+      assrt = DECADD;
     }
+    var substitutions =
+        Map.ofEntries(
+            Map.entry("A", new NumberRepresentation(a).toString()),
+            Map.entry("B", new NumberRepresentation(b).toString()),
+            Map.entry("C", new NumberRepresentation(c).toString()),
+            Map.entry("D", new NumberRepresentation(d).toString()),
+            Map.entry("E", new NumberRepresentation(e).toString()),
+            Map.entry("F", new NumberRepresentation(f).toString()),
+            Map.entry("M", asExpression(operand1)),
+            Map.entry("N", asExpression(operand2)));
+    return getProofOfAssrt(prop, assrt, substitutions);
   }
 
   private MachineProof getProofUsingCommutationOfOperands(
