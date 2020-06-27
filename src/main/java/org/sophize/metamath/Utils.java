@@ -110,6 +110,7 @@ public class Utils {
 
   public static String getStatementWithSubstitutions(
       String stmt, Map<String, String> substitutions) {
+    if (substitutions.isEmpty()) return stmt;
     return Arrays.stream(stmt.split(" "))
         .map(sym -> substitutions.getOrDefault(sym, sym))
         .collect(Collectors.joining(" "));

@@ -3,9 +3,7 @@ package org.sophize.metamath.formachines;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import mmj.lang.Assrt;
-import mmj.lang.ParseNode;
 import mmj.lang.Stmt;
-import mmj.lang.Var;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.Utils;
 import org.sophize.metamath.formachines.machines.MetamathMachine;
@@ -13,9 +11,7 @@ import org.sophize.metamath.formachines.machines.MetamathMachine;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import static java.util.stream.Collectors.toList;
 import static org.sophize.datamodel.ResourceType.PROPOSITION;
 import static org.sophize.metamath.Utils.getLookupTermsForParseNode;
 import static org.sophize.metamath.formachines.Databases.SET_DB;
@@ -51,25 +47,19 @@ public class ArgumentStep {
       MetamathMachine machineForProof,
       String dbName,
       List<Integer> hypIndices,
-      Map<Var, Var> substitutions) {
+      Map<String, String> substitutions) {
     // TODO: input actual hypothesis and verify/compute substitutions.
-    if (!substitutions.isEmpty()) throw new UnsupportedOperationException("Not implemented yet");
-
-    String expression = ParseNodeHelpers.asString(proposition.getAssrt());
+    String expression = ParseNodeHelpers.asStatement(proposition.getAssrt(), "|-");
+    List<String> lookupTerms;
+    if (!substitutions.isEmpty()) {
+      expression = Utils.getStatementWithSubstitutions(expression, substitutions);
+      lookupTerms = MachineUtils.getLookupTerms(expression, dbName);
+    } else {
+      lookupTerms = getLookupTermsForParseNode(proposition.getAssrt());
+    }
+    
     return new ArgumentStep(
-        hypIndices,
-        proposition.getResourcePtr(),
-        "",
-        expression,
-        MachineUtils.getLookupTerms(expression, dbName),
-        machineForProof);
-  }
-
-
-  public static ArgumentStep finalStepForArgument(Assrt assrt, Map<String, String> substitutions) {
-    var lastStepIndices =
-        IntStream.range(0, assrt.getLogHypArrayLength()).boxed().collect(toList());
-    return ArgumentStep.fromSetMM(assrt, lastStepIndices, substitutions);
+        hypIndices, proposition.getResourcePtr(), "", expression, lookupTerms, machineForProof);
   }
 
   public static ArgumentStep fromEphemeralReference(
@@ -99,6 +89,12 @@ public class ArgumentStep {
 
   public static ArgumentStep fromSetMM(Stmt stmt, List<Integer> hypIndices) {
     return fromDbReference(stmt, SET_DB, hypIndices, Map.of());
+  }
+
+  public static ArgumentStep fromSetMMHypothesis(String expression, String label) {
+    Preconditions.checkArgument(!Strings.isNullOrEmpty(expression));
+    var lookupTerms = MachineUtils.getLookupTerms(expression, MachineUtils.SET_DB);
+    return new ArgumentStep(List.of(), null, label, expression, lookupTerms, null);
   }
 
   ArgumentStep withHypIndices(List<Integer> hypIndices) {

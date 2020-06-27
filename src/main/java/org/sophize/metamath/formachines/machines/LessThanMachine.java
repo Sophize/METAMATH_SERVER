@@ -12,11 +12,11 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static org.sophize.metamath.formachines.ArgumentStep.finalStepForArgument;
 import static org.sophize.metamath.formachines.MachineUtils.getDigitsLenient;
 import static org.sophize.metamath.formachines.MachineUtils.getProofForAssrt;
 import static org.sophize.metamath.formachines.NumberRepresentation.DECIMAL_10;
@@ -176,7 +176,7 @@ public class LessThanMachine extends MetamathMachine {
                 0,
                 ArgumentStep.fromSetMM(safeUse(DEC10)),
                 EQBRTRI.getLogHypArrayLength(),
-                finalStepForArgument(EQBRTRI, eqbrtriSubstitutions)),
+                ArgumentStep.fromSetMM(EQBRTRI, List.of(0, 1), eqbrtriSubstitutions)),
             LessThanMachine::machineDeterminer);
 
     return getProofForAssrt(prop, hints, (Assrt) safeUse(EQBRTRI), eqbrtriSubstitutions);
