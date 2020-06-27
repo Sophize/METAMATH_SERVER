@@ -14,12 +14,12 @@ import java.util.stream.Stream;
 import static org.sophize.datamodel.ResourcePointer.PointerType.EPHEMERAL;
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
 
-public class ProofCompressor {
+class ProofCompressor {
   private final MachineProof original;
 
   private final BiMap<ResourcePointer, ResourcePointer> conclusionPtrToArgumentPtr;
 
-  public ProofCompressor(MachineProof proof) {
+  ProofCompressor(MachineProof proof) {
     this.original = proof;
     this.conclusionPtrToArgumentPtr =
         proof.arguments.entrySet().stream()
@@ -28,7 +28,8 @@ public class ProofCompressor {
                     Map.Entry::getKey, entry -> entry.getValue().getArgumentPtr()));
   }
 
-  public MachineProof compress(MetamathProposition proposition) {
+  MachineProof compress(MetamathProposition proposition) {
+    if (this.original.existingProposition != null) return this.original;
     Map<ResourcePointer, Integer> compressableArguments =
         getCompressableArgumentsInOrder(proposition.getResourcePtr());
     MetamathArgument compressed = compressArguments(proposition, compressableArguments);
@@ -68,13 +69,18 @@ public class ProofCompressor {
 
       for (int index = 0; index < argument.getSteps().size(); index++) {
         var step = argument.getSteps().get(index);
-        Preconditions.checkArgument(Strings.isNullOrEmpty(step.hypothesis), "Not implemented");
+        if (!Strings.isNullOrEmpty(step.hypothesis)) {
+          newArgumentSteps.add(step);
+          stepMapping.put(index, newArgumentSteps.size() - 1);
+          continue;
+        }
         Integer existingIndex = getExistingStepIndex(newArgumentSteps, step.expression);
         if (existingIndex != null) {
           stepMapping.put(index, existingIndex);
           continue;
         }
-        Preconditions.checkArgument(step.reference.getPointerType() != EPHEMERAL);
+        // TODO: Below is useful for many cases. Revisit.
+        // Preconditions.checkArgument(step.reference.getPointerType() != EPHEMERAL);
         var indices = step.hypIndices.stream().map(stepMapping::get).collect(Collectors.toList());
         Preconditions.checkArgument(indices.stream().allMatch(Objects::nonNull));
         ArgumentStep newStep = step.withHypIndices(indices);
@@ -83,7 +89,7 @@ public class ProofCompressor {
       }
     }
     ResourcePointer compressedArgPtr =
-        ResourcePointer.ephemeral(ARGUMENT, ParseNodeHelpers.getLabel(proposition.getAssrt()));
+        ResourcePointer.ephemeral(ARGUMENT, proposition.getResourcePtr().getId());
     return new MetamathArgument(compressedArgPtr, proposition, newArgumentSteps);
   }
 
@@ -125,6 +131,8 @@ public class ProofCompressor {
   private void assignDagOrderToCompressableArguments(
       ResourcePointer conclusionPtr, Map<ResourcePointer, Integer> argumentOrder) {
     var argument = original.arguments.get(conclusionPtr);
+    Preconditions.checkArgument(
+        argument != null, "Argument not found for: " + conclusionPtr.toString());
     if (argumentOrder.containsKey(argument.getArgumentPtr())) return;
     argument.getSteps().stream()
         // References of steps with hypothesis are uncompressable. They will be handled separately.
