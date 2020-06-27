@@ -11,7 +11,8 @@ public enum MachineId {
   NN0(NN0ClosureMachine.getInstance()),
   NN(NNClosureMachine.getInstance()),
   CC(CCClosureMachine.getInstance()),
-  LESS_THAN(LessThanMachine.getInstance());
+  NN_LESS_THAN(NNLessThanMachine.getInstance()),
+  NN_SUM(NNSumMachine.getInstance());
 
   private final MetamathMachine machine;
   private static final Map<String, MachineId> machineMap;

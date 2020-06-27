@@ -20,12 +20,12 @@ import static org.sophize.metamath.formachines.MachineUtils.getProofForAssrt;
 import static org.sophize.metamath.formachines.NumberRepresentation.DECIMAL_10;
 import static org.sophize.metamath.formachines.NumberRepresentation.PRIMITIVE_10;
 
-public class LessThanMachine extends MetamathMachine {
-  private static LessThanMachine instance = new LessThanMachine();
+public class NNLessThanMachine extends MetamathMachine {
+  private static NNLessThanMachine instance = new NNLessThanMachine();
 
-  private LessThanMachine() {}
+  private NNLessThanMachine() {}
 
-  public static LessThanMachine getInstance() {
+  public static NNLessThanMachine getInstance() {
     return instance;
   }
 
@@ -220,7 +220,7 @@ public class LessThanMachine extends MetamathMachine {
   private MetamathMachine machineDeterminer(ParseNode node) {
     if (node.stmt.getLabel().equals("wbr")) {
       var relationLabel = node.child[1].stmt.getLabel();
-      if (relationLabel.equals("clt")) return safeUse(LessThanMachine.getInstance());
+      if (relationLabel.equals("clt")) return safeUse(NNLessThanMachine.getInstance());
     }
     if (node.stmt.getLabel().equals("wcel")) {
       var setLabel = node.child[1].stmt.getLabel();
