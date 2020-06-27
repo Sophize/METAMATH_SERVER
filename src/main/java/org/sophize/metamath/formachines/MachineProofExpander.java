@@ -12,26 +12,54 @@ import java.util.stream.Collectors;
 
 class MachineProofExpander {
 
-  private static final int MAX_EXPANSIONS = 100;
+  private static final int MAX_EXPANSIONS = 10000;
 
-  static MachineProof expand(MachineProof machineProof, MetamathProposition resolvedProposition) {
+  static MachineProof expand(MachineProof machineProof, MetamathProposition primaryProposition) {
     if (machineProof.existingProposition != null) return machineProof;
 
-    Queue<Map.Entry<ResourcePointer, MetamathMachine>> pending =
-        new ArrayDeque<>(machineProof.fromMachineArguments.entrySet());
-    Map<ResourcePointer, MetamathArgument> expanded = new HashMap<>(machineProof.arguments);
-    Map<ResourcePointer, MetamathProposition> generated = new HashMap<>(machineProof.propositions);
+    var queue = new ExpansionQueue(machineProof);
 
-    Map.Entry<ResourcePointer, MetamathMachine> head;
+    Map.Entry<ResourcePointer, MetamathMachine> head = queue.next();
     int numExpansions = 0;
-    while ((head = pending.poll()) != null) {
-      var conclusionPtr = head.getKey();
-      if (expanded.containsKey(conclusionPtr)) continue;
-      if (++numExpansions > MAX_EXPANSIONS) break;
+    for (; head != null && numExpansions < MAX_EXPANSIONS; head = queue.next(), ++numExpansions) {
+      var toExpandPropPtr = head.getKey();
+      var expandingMachine = head.getValue();
+      var toExpandProp = queue.getProposition(toExpandPropPtr, primaryProposition);
+      MachineProof subProof = expandingMachine.getProof(toExpandProp);
+      Preconditions.checkArgument(
+          subProof != null, "Expander: Didn't get sub-proof: " + toExpandProp.getResourcePtr());
+      if ((toExpandProp == primaryProposition) && subProof.existingProposition != null) {
+        return new MachineProof(subProof.existingProposition);
+      }
+      queue.updateWithSubProof(subProof, toExpandPropPtr);
+    }
 
-      var machineForProof = head.getValue();
-      MachineProof subProof = machineForProof.getProof(generated.get(conclusionPtr));
+    var remainingMachineArguments =
+        queue.pending.stream()
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1));
+    return new MachineProof(queue.generated, queue.expanded, remainingMachineArguments);
+  }
 
+  private static class ExpansionQueue {
+    Queue<Map.Entry<ResourcePointer, MetamathMachine>> pending;
+    Map<ResourcePointer, MetamathArgument> expanded;
+    Map<ResourcePointer, MetamathProposition> generated;
+
+    ExpansionQueue(MachineProof proof) {
+      this.pending = new ArrayDeque<>(proof.fromMachineArguments.entrySet());
+      this.expanded = new HashMap<>(proof.arguments);
+      this.generated = new HashMap<>(proof.propositions);
+    }
+
+    private Map.Entry<ResourcePointer, MetamathMachine> next() {
+      var head = this.pending.poll();
+      while (head != null && expanded.containsKey(head.getKey())) {
+        head = this.pending.poll();
+      }
+      return head;
+    }
+
+    private void updateWithSubProof(MachineProof subProof, ResourcePointer toExpandPropPtr) {
       for (var propPair : subProof.propositions.entrySet()) {
         generated.putIfAbsent(propPair.getKey(), propPair.getValue());
       }
@@ -44,19 +72,23 @@ class MachineProofExpander {
         }
       }
       if (subProof.existingProposition != null) {
-        generated.remove(conclusionPtr);
-        expanded.remove(conclusionPtr);
+        generated.remove(toExpandPropPtr);
+        expanded.remove(toExpandPropPtr);
         for (var expandedEntry : expanded.entrySet()) {
           var metamathArg = expandedEntry.getValue();
-          var updated = metamathArg.replace(conclusionPtr, subProof.getExistingPropositionPtr());
+          var updated = metamathArg.replace(toExpandPropPtr, subProof.getExistingPropositionPtr());
           expanded.put(expandedEntry.getKey(), updated);
         }
       }
     }
 
-    var remainingMachineArguments =
-        pending.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    return new MachineProof(generated, expanded, remainingMachineArguments);
+    private MetamathProposition getProposition(
+        ResourcePointer propPtr, MetamathProposition primaryProposition) {
+      var generatedProp = generated.get(propPtr);
+      if (generatedProp != null) return generatedProp;
+      Preconditions.checkArgument(primaryProposition.getResourcePtr().equals(propPtr));
+      return primaryProposition;
+    }
   }
 
   private MachineProofExpander() {}
