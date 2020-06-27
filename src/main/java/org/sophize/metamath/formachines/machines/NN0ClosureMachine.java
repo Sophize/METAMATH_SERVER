@@ -34,7 +34,8 @@ public class NN0ClosureMachine extends MetamathMachine {
 
   @Override
   public String getDescription() {
-    return "To get proofs for statements like |- ; 2 0 e. NN0";
+    return "This machine generates proofs of membership in the set of natural numbers (NN0).\n"
+        + "Eg. |- ; 2 0 e. NN0";
   }
 
   @Override
