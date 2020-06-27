@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
-class MachineProofExpander {
+class ProofExpander {
 
   private static final int MAX_EXPANSIONS = 10000;
 
@@ -91,5 +91,5 @@ class MachineProofExpander {
     }
   }
 
-  private MachineProofExpander() {}
+  private ProofExpander() {}
 }

@@ -14,12 +14,12 @@ import java.util.stream.Stream;
 import static org.sophize.datamodel.ResourcePointer.PointerType.EPHEMERAL;
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
 
-class ProofCompressor {
+class ProofCollapser {
   private final MachineProof original;
 
   private final BiMap<ResourcePointer, ResourcePointer> conclusionPtrToArgumentPtr;
 
-  ProofCompressor(MachineProof proof) {
+  ProofCollapser(MachineProof proof) {
     this.original = proof;
     this.conclusionPtrToArgumentPtr =
         proof.arguments.entrySet().stream()
