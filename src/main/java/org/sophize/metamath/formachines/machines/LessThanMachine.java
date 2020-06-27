@@ -49,37 +49,44 @@ public class LessThanMachine extends MetamathMachine {
                                           new NumberRepresentation(op2, false))))
                   .flatMap(Function.identity()))
           .collect(toList());
-  private static String LESS_THAN_SYMBOL = "<";
 
+  @Override
   public String getDescription() {
     return "To get proofs for statements like |- ; 1 5 < ; 2 7";
   }
 
+  @Override
   public boolean isIndexable() {
     return true;
   }
 
+  @Override
   public String getDefaultStrictStatement() {
     return "|- ; 1 5 < ; 2 7";
   }
 
+  @Override
   public String getDefaultLenientStatement() {
     return "15 < 27";
   }
 
+  @Override
   public List<Stmt> getPremisePropositions() {
     return PREMISE_PROPOSITIONS;
   }
 
+  @Override
   public List<ResourcePointer> getPremiseMachines() {
     return List.of(
-        NNMachine.getInstance().getAssignablePtr(), NN0Machine.getInstance().getAssignablePtr());
+        NNClosureMachine.getInstance().getAssignablePtr(),
+        NN0ClosureMachine.getInstance().getAssignablePtr());
   }
 
+  @Override
   public MetamathProposition parseLenient(@Nonnull Proposition proposition) {
     try {
       String stmt = proposition.getStatement();
-      int lessThanLoc = stmt.indexOf(LESS_THAN_SYMBOL);
+      int lessThanLoc = stmt.indexOf("<");
       if (lessThanLoc <= 0) return null;
       List<Integer> operand1Digits = getDigitsLenient(stmt.substring(0, lessThanLoc));
       List<Integer> operand2Digits = getDigitsLenient(stmt.substring(lessThanLoc + 1));
@@ -95,12 +102,12 @@ public class LessThanMachine extends MetamathMachine {
     }
   }
 
+  @Override
   public String getNotProvableReason(MetamathProposition proposition) {
     ParseNode assrt = proposition.getAssrt();
-    String doesntHandleReason = "This machine doesn't handle such statements";
-    if (!assrt.stmt.getLabel().equals("wbr")) return doesntHandleReason;
-    if (assrt.child.length != 3) return doesntHandleReason;
-    if (!assrt.child[2].stmt.getLabel().equals("clt")) return doesntHandleReason;
+    if (!assrt.stmt.getLabel().equals("wbr")) return DOESNT_HANDLE_REASON;
+    if (assrt.child.length != 3) return DOESNT_HANDLE_REASON;
+    if (!assrt.child[2].stmt.getLabel().equals("clt")) return DOESNT_HANDLE_REASON;
     var operand1 = NumberRepresentation.fromParseNode(assrt.child[0]);
     var operand2 = NumberRepresentation.fromParseNode(assrt.child[1]);
 
@@ -114,14 +121,14 @@ public class LessThanMachine extends MetamathMachine {
     return null;
   }
 
+  @Override
   public MachineProof getProof(MetamathProposition proposition) {
-    if (getNotProvableReason(proposition) != null) return null;
+    if (!isProvable(proposition)) return null;
     ParseNode assrt = proposition.getAssrt();
     var operand1 = NumberRepresentation.fromParseNode(assrt.child[0]);
     var operand2 = NumberRepresentation.fromParseNode(assrt.child[1]);
 
     if (!operand2.decimalFormat) {
-      Preconditions.checkArgument(operand2.number <= 10);
       return new MachineProof(safeUse(nonDecimalComparisionStatement(operand1, operand2)));
     }
 
@@ -144,13 +151,8 @@ public class LessThanMachine extends MetamathMachine {
 
     var a = new NumberRepresentation(operand2.number / 10);
     var b = new NumberRepresentation(operand2.number % 10);
-
-    var decltiSubstitutions = Map.of("A", a.toString(), "B", b.toString(), "C", c.toString());
-
-    var hints =
-        StepFactory.forArgumentWithGeneratedPremises(
-            DECLTI, decltiSubstitutions, LessThanMachine::machineDeterminer);
-    return getProofForAssrt(prop, hints, (Assrt) safeUse(DECLTI), decltiSubstitutions);
+    var substitutions = Map.of("A", a.toString(), "B", b.toString(), "C", c.toString());
+    return getProofOfAssrt(prop, DECLTI, substitutions);
   }
 
   private MachineProof getCompareWithPrimitive10Proof(
@@ -159,26 +161,19 @@ public class LessThanMachine extends MetamathMachine {
     Preconditions.checkArgument(operand2.decimalFormat);
 
     var eqbrtriSubstitutions =
-        Map.of(
-            "A",
-            PRIMITIVE_10.toString(),
-            "B",
-            DECIMAL_10.toString(),
-            "C",
-            operand2.toString(),
-            "R",
-            LESS_THAN_SYMBOL);
+        Map.ofEntries(
+            Map.entry("A", PRIMITIVE_10.toString()),
+            Map.entry("B", DECIMAL_10.toString()),
+            Map.entry("C", operand2.toString()),
+            Map.entry("R", "<"));
 
-    StepFactory hints =
+    // 1st step is |- 10 = ; 1 0 (dec10). We don't want the factory to treat this as an ephemeral
+    // proposition and try to assign a machine. So we provide this step explicitly.
+    StepFactory stepFactory =
         new StepFactory(
-            Map.of(
-                0,
-                ArgumentStep.fromSetMM(safeUse(DEC10)),
-                EQBRTRI.getLogHypArrayLength(),
-                ArgumentStep.fromSetMM(EQBRTRI, List.of(0, 1), eqbrtriSubstitutions)),
-            LessThanMachine::machineDeterminer);
+            Map.of(0, ArgumentStep.fromSetMM(safeUse(DEC10))), LessThanMachine::machineDeterminer);
 
-    return getProofForAssrt(prop, hints, (Assrt) safeUse(EQBRTRI), eqbrtriSubstitutions);
+    return getProofForAssrt(prop, stepFactory, (Assrt) safeUse(EQBRTRI), eqbrtriSubstitutions);
   }
 
   private MachineProof getCompareWithUnequalHigherPlacesProof(
@@ -191,14 +186,9 @@ public class LessThanMachine extends MetamathMachine {
     var b = new NumberRepresentation(operand2.number / 10);
     var d = new NumberRepresentation(operand2.number % 10);
 
-    var decltcSubstitutions =
+    var substitutions =
         Map.of("A", a.toString(), "B", b.toString(), "C", c.toString(), "D", d.toString());
-
-    var hints =
-        StepFactory.forArgumentWithGeneratedPremises(
-            DECLTC, decltcSubstitutions, LessThanMachine::machineDeterminer);
-
-    return getProofForAssrt(prop, hints, (Assrt) safeUse(DECLTC), decltcSubstitutions);
+    return getProofOfAssrt(prop, DECLTC, substitutions);
   }
 
   private MachineProof getCompareWithEqualHigherPlacesProof(
@@ -210,12 +200,8 @@ public class LessThanMachine extends MetamathMachine {
     var b = new NumberRepresentation(operand1.number % 10);
     var c = new NumberRepresentation(operand2.number % 10);
 
-    var decltSubstitutions = Map.of("A", a.toString(), "B", b.toString(), "C", c.toString());
-
-    var hints =
-        StepFactory.forArgumentWithGeneratedPremises(
-            DECLT, decltSubstitutions, LessThanMachine::machineDeterminer);
-    return getProofForAssrt(prop, hints, (Assrt) safeUse(DECLT), decltSubstitutions);
+    var substitutions = Map.of("A", a.toString(), "B", b.toString(), "C", c.toString());
+    return getProofOfAssrt(prop, DECLT, substitutions);
   }
 
   private static Stmt nonDecimalComparisionStatement(
@@ -229,13 +215,21 @@ public class LessThanMachine extends MetamathMachine {
     return Databases.getSetMMStmt(operand1.number + "lt" + operand2.number);
   }
 
+  private MachineProof getProofOfAssrt(
+      MetamathProposition proposition, Assrt assrt, Map<String, String> substitutions) {
+    var stepFactory =
+        StepFactory.forArgumentWithGeneratedPremises(
+            assrt, substitutions, LessThanMachine::machineDeterminer);
+    return getProofForAssrt(proposition, stepFactory, (Assrt) safeUse(assrt), substitutions);
+  }
+
   private static MetamathMachine machineDeterminer(ParseNode node) {
     if (node.stmt.getLabel().equals("wbr")) {
       if (node.child[2].stmt.getLabel().equals("clt")) return LessThanMachine.getInstance();
     }
     if (node.stmt.getLabel().equals("wcel")) {
-      if (node.child[1].stmt.getLabel().equals("cn0")) return NN0Machine.getInstance();
-      if (node.child[1].stmt.getLabel().equals("cn")) return NNMachine.getInstance();
+      if (node.child[1].stmt.getLabel().equals("cn0")) return NN0ClosureMachine.getInstance();
+      if (node.child[1].stmt.getLabel().equals("cn")) return NNClosureMachine.getInstance();
     }
     return null;
   }

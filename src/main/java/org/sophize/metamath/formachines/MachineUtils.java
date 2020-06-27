@@ -1,5 +1,6 @@
 package org.sophize.metamath.formachines;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import mmj.lang.*;
 import mmj.verify.Grammar;
@@ -94,12 +95,12 @@ public class MachineUtils {
 
   public static MachineProof getProofForAssrt(
       MetamathProposition prop,
-      StepFactory hints,
+      StepFactory stepFactory,
       Assrt assrt,
       Map<String, String> substitutions) {
     var stepNodes = getNodesForHypAndAssert(assrt, substitutions);
     Preconditions.checkArgument(stepNodes.stream().allMatch(Objects::nonNull));
-    var newArg = argumentFromStepParseNodes(stepNodes, hints, prop);
+    var newArg = argumentFromStepParseNodes(stepNodes, stepFactory, prop);
     return new MachineProof(
         newArg.getGeneratedPremises(),
         Map.of(prop.getResourcePtr(), newArg),
@@ -117,8 +118,8 @@ public class MachineUtils {
   }
 
   private static MetamathArgument argumentFromStepParseNodes(
-          List<ParseNode> stepNodes, StepFactory hints, MetamathProposition prop) {
-    var steps = hints.getSteps(stepNodes);
+      List<ParseNode> stepNodes, StepFactory stepFactory, MetamathProposition prop) {
+    var steps = stepFactory.getSteps(stepNodes);
     var newArgumentPtr = ResourcePointer.ephemeral(ARGUMENT, prop.getResourcePtr().getId());
     return new MetamathArgument(newArgumentPtr, prop, steps);
   }

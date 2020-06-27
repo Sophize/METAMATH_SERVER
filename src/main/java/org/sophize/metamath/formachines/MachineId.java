@@ -2,8 +2,8 @@ package org.sophize.metamath.formachines;
 
 import org.sophize.metamath.formachines.machines.LessThanMachine;
 import org.sophize.metamath.formachines.machines.MetamathMachine;
-import org.sophize.metamath.formachines.machines.NN0Machine;
-import org.sophize.metamath.formachines.machines.NNMachine;
+import org.sophize.metamath.formachines.machines.NN0ClosureMachine;
+import org.sophize.metamath.formachines.machines.NNClosureMachine;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -11,8 +11,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum MachineId {
-  NN0(NN0Machine.getInstance()),
-  NN(NNMachine.getInstance()),
+  NN0(NN0ClosureMachine.getInstance()),
+  NN(NNClosureMachine.getInstance()),
   LESS_THAN(LessThanMachine.getInstance());
 
   private final MetamathMachine machine;
