@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import static org.sophize.metamath.formachines.MachineUtils.getProofForAssrt;
+import static org.sophize.metamath.formachines.MachineUtils.getProofForSetMMAssrt;
 import static org.sophize.metamath.formachines.NumberRepresentation.DECIMAL_10;
 import static org.sophize.metamath.formachines.NumberRepresentation.PRIMITIVE_10;
 import static org.sophize.metamath.formachines.ParseNodeHelpers.*;
@@ -176,7 +176,7 @@ public class NNSumProductExpressionMachine extends MetamathMachine {
     if (!side1Equal) return proofCase1Special3(prop, leftChild1, leftChild2, rightChild1, operator);
 
     var factory = new StepFactory(Map.of(), null);
-    return getProofForAssrt(
+    return getProofForSetMMAssrt(
         prop, factory, (Assrt) safeUse(EQID), Map.of("A", asExpression(prop.getAssrt().child[0])));
   }
 
@@ -415,7 +415,7 @@ public class NNSumProductExpressionMachine extends MetamathMachine {
       MetamathProposition proposition, Assrt assrt, Map<String, String> substitutions) {
     var stepFactory =
         StepFactory.forArgumentWithGeneratedPremises(assrt, substitutions, this::machineDeterminer);
-    return getProofForAssrt(proposition, stepFactory, (Assrt) safeUse(assrt), substitutions);
+    return getProofForSetMMAssrt(proposition, stepFactory, (Assrt) safeUse(assrt), substitutions);
   }
 
   private MetamathMachine machineDeterminer(ParseNode node) {

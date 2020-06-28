@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static org.sophize.metamath.formachines.MachineUtils.getDigitsLenient;
-import static org.sophize.metamath.formachines.MachineUtils.getProofForAssrt;
+import static org.sophize.metamath.formachines.MachineUtils.getProofForSetMMAssrt;
 import static org.sophize.metamath.formachines.NumberRepresentation.DECIMAL_10;
 import static org.sophize.metamath.formachines.NumberRepresentation.PRIMITIVE_10;
 
@@ -168,7 +168,7 @@ public class NNLessThanMachine extends MetamathMachine {
     // proposition and try to assign a machine. So, this step explicitly provided.
     StepFactory stepFactory =
         new StepFactory(Map.of(0, ArgumentStep.fromSetMM(safeUse(DEC10))), this::machineDeterminer);
-    return getProofForAssrt(prop, stepFactory, (Assrt) safeUse(EQBRTRI), eqbrtriSubstitutions);
+    return getProofForSetMMAssrt(prop, stepFactory, (Assrt) safeUse(EQBRTRI), eqbrtriSubstitutions);
   }
 
   private MachineProof getCompareWithUnequalHigherPlacesProof(
@@ -214,7 +214,7 @@ public class NNLessThanMachine extends MetamathMachine {
       MetamathProposition proposition, Assrt assrt, Map<String, String> substitutions) {
     var stepFactory =
         StepFactory.forArgumentWithGeneratedPremises(assrt, substitutions, this::machineDeterminer);
-    return getProofForAssrt(proposition, stepFactory, (Assrt) safeUse(assrt), substitutions);
+    return getProofForSetMMAssrt(proposition, stepFactory, (Assrt) safeUse(assrt), substitutions);
   }
 
   private MetamathMachine machineDeterminer(ParseNode node) {

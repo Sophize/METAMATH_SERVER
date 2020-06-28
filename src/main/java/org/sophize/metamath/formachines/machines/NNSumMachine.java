@@ -19,7 +19,8 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
-import static org.sophize.metamath.formachines.MachineUtils.*;
+import static org.sophize.metamath.formachines.MachineUtils.getProofForSetMMAssrt;
+import static org.sophize.metamath.formachines.MachineUtils.parseSetMMStatement;
 import static org.sophize.metamath.formachines.ParseNodeHelpers.*;
 
 public class NNSumMachine extends MetamathMachine {
@@ -163,7 +164,7 @@ public class NNSumMachine extends MetamathMachine {
     var number = NumberRepresentation.fromParseNode(numberNode);
     var substitutions = Map.of("A", number.toString());
     var factory = StepFactory.forArgumentWithGeneratedPremises(EQID, substitutions, null);
-    return getProofForAssrt(proposition, factory, (Assrt) safeUse(EQID), substitutions);
+    return getProofForSetMMAssrt(proposition, factory, (Assrt) safeUse(EQID), substitutions);
   }
 
   private MachineProof getSpecialCaseProof(MetamathProposition prop) {
@@ -204,10 +205,10 @@ public class NNSumMachine extends MetamathMachine {
 
     var steps =
         List.of(
-            ArgumentStep.fromEphemeralReference(oveq1iHypProp, NNSumMachine.getInstance()),
-            ArgumentStep.fromDbReference(OVEQ1I, SET_DB, List.of(0), oveq1iSubstitutions),
-            ArgumentStep.fromEphemeralReference(eqtriHypProp, NNSumMachine.getInstance()),
-            ArgumentStep.fromDbReference(EQTRI, SET_DB, List.of(1, 2), eqtriSubstitutions));
+            ArgumentStep.fromSetMMEphemeralReference(oveq1iHypProp, NNSumMachine.getInstance()),
+            ArgumentStep.fromSetMM(OVEQ1I, List.of(0), oveq1iSubstitutions),
+            ArgumentStep.fromSetMMEphemeralReference(eqtriHypProp, NNSumMachine.getInstance()),
+            ArgumentStep.fromSetMM(EQTRI, List.of(1, 2), eqtriSubstitutions));
     var newArgumentPtr = ResourcePointer.ephemeral(ARGUMENT, prop.getResourcePtr().getId());
     var newArg = new MetamathArgument(newArgumentPtr, prop, steps);
     return new MachineProof(
@@ -294,7 +295,7 @@ public class NNSumMachine extends MetamathMachine {
       MetamathProposition proposition, Assrt assrt, Map<String, String> substitutions) {
     var stepFactory =
         StepFactory.forArgumentWithGeneratedPremises(assrt, substitutions, this::machineDeterminer);
-    return getProofForAssrt(proposition, stepFactory, (Assrt) safeUse(assrt), substitutions);
+    return getProofForSetMMAssrt(proposition, stepFactory, (Assrt) safeUse(assrt), substitutions);
   }
 
   private MetamathMachine machineDeterminer(ParseNode node) {

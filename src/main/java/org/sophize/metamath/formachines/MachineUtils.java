@@ -17,12 +17,9 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
 import static org.sophize.metamath.Utils.getLookupTermsForParseNode;
+import static org.sophize.metamath.formachines.Databases.SET_DB;
 
 public class MachineUtils {
-  public static final String SET_DB = "set.mm";
-  public static final String ISET_DB = "iset.mm";
-  public static final String NF_DB = "nf.mm";
-
   // So far we have needed only these two variable hypothesis for parsing the statement needed by
   // the machines in this server.
   // TODO: Determine hyps needed automatically. Don't hard code values here.
@@ -99,12 +96,12 @@ public class MachineUtils {
     return response;
   }
 
-  public static MachineProof getProofForAssrt(
+  public static MachineProof getProofForSetMMAssrt(
       MetamathProposition prop,
       StepFactory stepFactory,
       Assrt assrt,
       Map<String, String> substitutions) {
-    var stepNodes = getNodesForHypAndAssert(assrt, substitutions);
+    var stepNodes = getNodesForSetMMHypAndAssert(assrt, substitutions);
     Preconditions.checkArgument(stepNodes.stream().allMatch(Objects::nonNull));
     var newArg = argumentFromStepParseNodes(stepNodes, stepFactory, prop);
     return new MachineProof(
@@ -113,17 +110,17 @@ public class MachineUtils {
         newArg.getMachineArguments());
   }
 
-  public static MetamathArgument getArgumentForGeneratedLemma(
+  public static MetamathArgument getArgumentForSetMMGeneratedLemma(
       MetamathProposition prop,
       StepFactory stepFactory,
       MetamathProposition lemma,
       Map<String, String> substitutions) {
-    var stepNodes = getNodesForHypAndAssert(lemma, substitutions);
+    var stepNodes = getNodesForSetMMHypAndAssert(lemma, substitutions);
     Preconditions.checkArgument(stepNodes.stream().allMatch(Objects::nonNull));
     return argumentFromStepParseNodes(stepNodes, stepFactory, prop);
   }
 
-  private static List<ParseNode> getNodesForHypAndAssert(
+  private static List<ParseNode> getNodesForSetMMHypAndAssert(
       Assrt assrt, Map<String, String> substitutions) {
     return Stream.concat(Arrays.stream(assrt.getLogHypArray()), Stream.of(assrt))
         .map(
@@ -134,7 +131,7 @@ public class MachineUtils {
         .collect(toList());
   }
 
-  private static List<ParseNode> getNodesForHypAndAssert(
+  private static List<ParseNode> getNodesForSetMMHypAndAssert(
       MetamathProposition proposition, Map<String, String> substitutions) {
     return Stream.concat(proposition.getLogHypArray().stream(), Stream.of(proposition.getAssrt()))
         .map(

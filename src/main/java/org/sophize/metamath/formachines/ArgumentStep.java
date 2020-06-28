@@ -64,8 +64,13 @@ public class ArgumentStep {
   }
 
   public static ArgumentStep fromEphemeralReference(
+      MetamathProposition proposition, MetamathMachine machineForProof, String dbName) {
+    return fromEphemeralReference(proposition, machineForProof, dbName, List.of(), Map.of());
+  }
+
+  public static ArgumentStep fromSetMMEphemeralReference(
       MetamathProposition proposition, MetamathMachine machineForProof) {
-    return fromEphemeralReference(proposition, machineForProof, SET_DB, List.of(), Map.of());
+    return fromEphemeralReference(proposition, machineForProof, SET_DB);
   }
 
   public static ArgumentStep fromDbReference(
@@ -94,7 +99,7 @@ public class ArgumentStep {
 
   public static ArgumentStep fromSetMMHypothesis(String expression, String label) {
     Preconditions.checkArgument(!Strings.isNullOrEmpty(expression));
-    var lookupTerms = MachineUtils.getLookupTerms(expression, MachineUtils.SET_DB);
+    var lookupTerms = MachineUtils.getLookupTerms(expression, SET_DB);
     return new ArgumentStep(List.of(), null, label, expression, lookupTerms, null);
   }
 

@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
 import static org.sophize.metamath.formachines.ArgumentStep.fromSetMM;
+import static org.sophize.metamath.formachines.ArgumentStep.fromSetMMEphemeralReference;
 import static org.sophize.metamath.formachines.MachineUtils.*;
 
 public class PrimeNumberMachine extends MetamathMachine {
@@ -307,7 +308,7 @@ public class PrimeNumberMachine extends MetamathMachine {
           fromSetMM(safeUse(ELUZELRE), List.of(), Map.of("N", "x", "M", numStr)), // 0
           fromSetMM(safeUse(RESQCLD), List.of(0), Map.of("ph", xInZNum, "A", "x")), // 1
           fromSetMM(safeUse(ELUZLE), List.of(), Map.of("N", "x", "M", numStr)), // 2
-          ArgumentStep.fromEphemeralReference(numInNN0Prop, NN0ClosureMachine.getInstance()), // 3
+          fromSetMMEphemeralReference(numInNN0Prop, NN0ClosureMachine.getInstance()), // 3
           fromSetMM(safeUse(NN0REI), List.of(3), Map.of("A", numStr)), // 4
           fromSetMM(safeUse(NN0GE0I), List.of(3), Map.of("N", numStr)), // 5
           fromSetMM(safeUse(LE2SQ2), List.of(), Map.of("A", numStr, "B", "x")), // 6
@@ -318,7 +319,7 @@ public class PrimeNumberMachine extends MetamathMachine {
           fromSetMM(safeUse(RESQCLI), List.of(4), Map.of("A", numStr)), // 11
           fromSetMM(safeUse(NN0CNI), List.of(3), Map.of("A", numStr)), // 12
           fromSetMM(safeUse(SQVALI), List.of(12), Map.of("A", numStr)), // 13
-          ArgumentStep.fromEphemeralReference(
+          fromSetMMEphemeralReference(
               squareValProp, NNSumProductExpressionMachine.getInstance()), // 14
           fromSetMM( // 15
               safeUse(EQTRI), List.of(13, 14), Map.of("A", num2, "C", squareNum.toString())),
@@ -389,7 +390,7 @@ public class PrimeNumberMachine extends MetamathMachine {
     var notKInPrime = new MetamathProposition(parseSetMMStatement("|- -. " + kInPrime));
 
     var KP2EqM = new MetamathProposition(parseSetMMStatement("|- ( " + K + " + 2 ) = " + M));
-    var KP2EqMStep = ArgumentStep.fromEphemeralReference(KP2EqM, NNSumMachine.getInstance());
+    var KP2EqMStep = fromSetMMEphemeralReference(KP2EqM, NNSumMachine.getInstance());
 
     var finalStepHypIndices = List.of(stepOffset - 1, stepOffset + 1, stepOffset + 2);
     var finalStep =
@@ -400,7 +401,7 @@ public class PrimeNumberMachine extends MetamathMachine {
       step1 = ArgumentStep.fromSetMMHypothesis("|- " + notKDvdsN, lemmaLabel + "." + k);
       step2 = fromSetMM(A1I, List.of(stepOffset), Map.of("ph", notKDvdsN, "ps", kInPrime));
     } else {
-      step1 = ArgumentStep.fromEphemeralReference(notKInPrime, PrimeNumberMachine.getInstance());
+      step1 = fromSetMMEphemeralReference(notKInPrime, PrimeNumberMachine.getInstance());
       step2 = fromSetMM(PM2_21I, List.of(stepOffset), Map.of("ph", kInPrime, "ps", notKDvdsN));
     }
     return List.of(step1, step2, KP2EqMStep, finalStep);
@@ -410,16 +411,18 @@ public class PrimeNumberMachine extends MetamathMachine {
       MetamathProposition proposition, Assrt assrt, Map<String, String> substitutions) {
     var stepFactory =
         StepFactory.forArgumentWithGeneratedPremises(assrt, substitutions, this::machineDeterminer);
-    return getProofForAssrt(proposition, stepFactory, (Assrt) safeUse(assrt), substitutions);
+    return getProofForSetMMAssrt(proposition, stepFactory, (Assrt) safeUse(assrt), substitutions);
   }
 
   private MetamathArgument getProofForLemma(
       MetamathProposition proposition,
       MetamathProposition lemma,
+      String dbForParsing,
       Map<String, String> substitutions) {
     var stepFactory =
-        StepFactory.forArgumentWithGeneratedPremises(lemma, substitutions, this::machineDeterminer);
-    return getArgumentForGeneratedLemma(proposition, stepFactory, lemma, substitutions);
+        StepFactory.forArgumentWithGeneratedPremises(
+            lemma, dbForParsing, substitutions, this::machineDeterminer);
+    return getArgumentForSetMMGeneratedLemma(proposition, stepFactory, lemma, substitutions);
   }
 
   private MetamathMachine machineDeterminer(ParseNode node) {

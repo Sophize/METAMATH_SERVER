@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.sophize.metamath.formachines.MachineUtils.getDigitsLenient;
-import static org.sophize.metamath.formachines.MachineUtils.getProofForAssrt;
+import static org.sophize.metamath.formachines.MachineUtils.getProofForSetMMAssrt;
 
 public class NNClosureMachine extends MetamathMachine {
   private static NNClosureMachine instance = new NNClosureMachine();
@@ -113,7 +113,7 @@ public class NNClosureMachine extends MetamathMachine {
     var stepFactory =
         StepFactory.forArgumentWithGeneratedPremises(
             dbAssrt, substitutions, this::machineDeterminer);
-    return getProofForAssrt(proposition, stepFactory, (Assrt) safeUse(dbAssrt), substitutions);
+    return getProofForSetMMAssrt(proposition, stepFactory, (Assrt) safeUse(dbAssrt), substitutions);
   }
 
   private MetamathMachine machineDeterminer(ParseNode node) {

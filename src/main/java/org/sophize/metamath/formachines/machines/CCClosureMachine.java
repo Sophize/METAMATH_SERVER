@@ -16,7 +16,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static org.sophize.metamath.formachines.MachineUtils.getDigitsLenient;
-import static org.sophize.metamath.formachines.MachineUtils.getProofForAssrt;
+import static org.sophize.metamath.formachines.MachineUtils.getProofForSetMMAssrt;
 
 public class CCClosureMachine extends MetamathMachine {
   private static CCClosureMachine instance = new CCClosureMachine();
@@ -98,7 +98,7 @@ public class CCClosureMachine extends MetamathMachine {
     var stepFactory =
         StepFactory.forArgumentWithGeneratedPremises(
             NN0CNI, substitutions, unused -> safeUse(NN0ClosureMachine.getInstance()));
-    return getProofForAssrt(prop, stepFactory, NN0CNI, substitutions);
+    return getProofForSetMMAssrt(prop, stepFactory, NN0CNI, substitutions);
   }
 
   private static Assrt primitiveStatementPtr(long number) {

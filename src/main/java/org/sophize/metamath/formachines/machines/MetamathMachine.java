@@ -18,6 +18,7 @@ import static java.lang.Character.isUpperCase;
 import static java.util.stream.Collectors.toList;
 import static org.sophize.datamodel.ResourcePointer.PointerType.ASSIGNABLE;
 import static org.sophize.datamodel.ResourceType.MACHINE;
+import static org.sophize.metamath.formachines.Databases.SET_DB;
 
 public abstract class MetamathMachine {
 
@@ -57,7 +58,7 @@ public abstract class MetamathMachine {
   public MetamathProposition parseStrict(Proposition proposition) {
     if (proposition.getLanguage() != Language.METAMATH_SET_MM) return null;
     String statement = MachineUtils.stripPropositionMarker(proposition.getStatement());
-    var parsedStmt = MachineUtils.parseStatement(statement, MachineUtils.SET_DB, new VarHyp[0]);
+    var parsedStmt = MachineUtils.parseStatement(statement, SET_DB, new VarHyp[0]);
     if (parsedStmt == null) return null;
     return new MetamathProposition(parsedStmt);
   }

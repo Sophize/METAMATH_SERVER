@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
-import static org.sophize.metamath.formachines.Databases.SET_DB;
 
 public class StepFactory {
 
@@ -47,10 +46,12 @@ public class StepFactory {
   // one proposition. But, instead of a proposition from set.mm, a generated proposition is used.
   public static StepFactory forArgumentWithGeneratedPremises(
       MetamathProposition p,
+      String dbForParsing,
       Map<String, String> substitutions,
       Function<ParseNode, MetamathMachine> machineDeterminer) {
     var hypIndices = IntStream.range(0, p.getLogHypArray().size()).boxed().collect(toList());
-    var finalStep = ArgumentStep.fromEphemeralReference(p, null, SET_DB, hypIndices, substitutions);
+    var finalStep =
+        ArgumentStep.fromEphemeralReference(p, null, dbForParsing, hypIndices, substitutions);
     var totalSteps = p.getLogHypArray().size() + 1;
     return new StepFactory(Map.of(totalSteps - 1, finalStep), machineDeterminer);
   }
@@ -67,6 +68,6 @@ public class StepFactory {
     var metamathMachine = machineDeterminer.apply(node);
     Preconditions.checkArgument(
         metamathMachine != null, "couldn't find machine for: " + node.toString());
-    return ArgumentStep.fromEphemeralReference(new MetamathProposition(node), metamathMachine);
+    return ArgumentStep.fromSetMMEphemeralReference(new MetamathProposition(node), metamathMachine);
   }
 }
