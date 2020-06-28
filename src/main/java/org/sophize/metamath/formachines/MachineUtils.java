@@ -10,10 +10,7 @@ import org.sophize.datamodel.ResourceType;
 import org.sophize.datamodel.TruthValue;
 import org.sophize.metamath.Utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,6 +22,12 @@ public class MachineUtils {
   public static final String SET_DB = "set.mm";
   public static final String ISET_DB = "iset.mm";
   public static final String NF_DB = "nf.mm";
+
+  // So far we have needed only these two variable hypothesis for parsing the statement needed by
+  // the machines in this server.
+  // TODO: Determine hyps needed automatically. Don't hard code values here.
+  private static final VarHyp[] HYPS_FOR_PARSING =
+      new VarHyp[] {(VarHyp) Databases.getSetMMStmt("vx"), (VarHyp) Databases.getSetMMStmt("cN")};
 
   public static String[] toStringArray(List<ResourcePointer> ptrs) {
     return ptrs.stream().map(ResourcePointer::toString).toArray(String[]::new);
@@ -38,7 +41,9 @@ public class MachineUtils {
   }
 
   public static List<String> getLookupTerms(String statement, String dbName) {
-    var parsed = parseStatement(statement, dbName);
+    ParseNode parsed;
+    if (dbName.equals(SET_DB)) parsed = parseSetMMStatement(statement);
+    else parsed = parseStatement(statement, dbName, new VarHyp[0]);
     return parsed == null ? null : getLookupTermsForParseNode(parsed);
   }
 
@@ -61,7 +66,8 @@ public class MachineUtils {
   }
 
   public static ParseNode parseSetMMStatement(String statement) {
-    return parseSetMMStatement(statement, new VarHyp[] {(VarHyp) Databases.getSetMMStmt("cN")});
+    // TODO: Remove the default VarHyp array used here.
+    return parseSetMMStatement(statement, HYPS_FOR_PARSING);
   }
 
   public static ParseNode parseSetMMStatement(String statement, VarHyp[] hyps) {
@@ -107,13 +113,36 @@ public class MachineUtils {
         newArg.getMachineArguments());
   }
 
+  public static MetamathArgument getArgumentForGeneratedLemma(
+      MetamathProposition prop,
+      StepFactory stepFactory,
+      MetamathProposition lemma,
+      Map<String, String> substitutions) {
+    var stepNodes = getNodesForHypAndAssert(lemma, substitutions);
+    Preconditions.checkArgument(stepNodes.stream().allMatch(Objects::nonNull));
+    return argumentFromStepParseNodes(stepNodes, stepFactory, prop);
+  }
+
   private static List<ParseNode> getNodesForHypAndAssert(
       Assrt assrt, Map<String, String> substitutions) {
     return Stream.concat(Arrays.stream(assrt.getLogHypArray()), Stream.of(assrt))
         .map(
-            stmt ->
-                MachineUtils.parseStatement(
-                    Utils.getStatementWithSubstitutions(stmt, substitutions), SET_DB))
+            stmt -> {
+              String statement = Utils.getStatementWithSubstitutions(stmt, substitutions);
+              return MachineUtils.parseStatement(statement, SET_DB, new VarHyp[0]);
+            })
+        .collect(toList());
+  }
+
+  private static List<ParseNode> getNodesForHypAndAssert(
+      MetamathProposition proposition, Map<String, String> substitutions) {
+    return Stream.concat(proposition.getLogHypArray().stream(), Stream.of(proposition.getAssrt()))
+        .map(
+            node -> {
+              String unsubstituted = ParseNodeHelpers.asStatement(node);
+              String statement = Utils.getStatementWithSubstitutions(unsubstituted, substitutions);
+              return parseStatement(statement, SET_DB, new VarHyp[0]);
+            })
         .collect(toList());
   }
 
