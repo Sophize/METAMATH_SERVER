@@ -119,6 +119,7 @@ class TempProposition {
       try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
         stream.forEach(
             line -> {
+              if (line.startsWith("//")) return;
               String[] words = line.split(" ");
               int numLabels = Integer.parseInt(words[0]);
               List<String> labels = Arrays.stream(words).skip(1).limit(numLabels).collect(toList());

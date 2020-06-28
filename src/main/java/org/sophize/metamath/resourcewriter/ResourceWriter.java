@@ -13,7 +13,7 @@ import mmj.verify.Grammar;
 import mmj.verify.VerifyProofs;
 import org.sophize.datamodel.*;
 import org.sophize.metamath.formachines.Databases;
-import org.sophize.metamath.formachines.MachineUtils;
+import org.sophize.metamath.formachines.MachineId;
 
 import java.io.File;
 import java.io.FileOutputStream;

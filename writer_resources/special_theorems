@@ -8,7 +8,7 @@
 1 eulerth 10 Euler's Generalization of Fermat's Little Theorem
 1 infpn2 11 The Infinitude of Primes
 1 basel 14 Euler's Summation of 1 + (1/2)^2 + (1/3)^2 + ....
-2 ftc1 ftc2 15 The Fundamental Theorem of Integral Calculus
+// 2 ftc1 ftc2 15 The Fundamental Theorem of Integral Calculus
 1 demoivre 17 De Moivre's Theorem
 1 aaliou 18 Liouville's Theorem and the Construction of Transcendental Numbers
 1 4sq 19 Four Squares Theorem
@@ -33,7 +33,7 @@
 1 cayleyhamilton 49 The Cayley-Hamilton Theorem
 1 wilth 51 Wilson's Theorem
 1 pw2en 52 The Number of Subsets of a Set
-1 konigsberg 54 The Konigsberg Bridge Problem
+// 1 konigsberg 54 The Konigsberg Bridge Problem
 1 chordthm 55 Product of Segments of Chords
 1 heron 57 Heron's Formula
 1 hashbc 58 Formula for the Number of Combinations
@@ -49,7 +49,7 @@
 1 perfect 70 The Perfect Number Theorem
 1 lagsubg 71 Order of a Subgroup
 4 sylow1 sylow2 sylow2b sylow3 72 Sylow's Theorem
-2 erdsze erdsze2 73 Ascending or Descending Sequences
+// 2 erdsze erdsze2 73 Ascending or Descending Sequences
 1 finds 74 The Principle of Mathematical Induction
 1 mvth 75 The Mean Value Theorem
 1 fourier 76 Fourier Series
@@ -62,7 +62,7 @@
 1 3dvds 85 Divisibility by 3 Rule
 1 itgcl 86 Lebesgue Measure and Integration
 1 dath 87 Desargues's Theorem
-2 derangfmla subfaclim 88 Derangements Formula
+// 2 derangfmla subfaclim 88 Derangements Formula
 2 facth plyrem 89 The Factor and Remainder Theorems
 1 stirling 90 Stirling's Formula
 1 abstrii 91 The Triangle Inequality

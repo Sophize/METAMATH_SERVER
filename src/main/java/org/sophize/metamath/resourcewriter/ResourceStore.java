@@ -17,7 +17,7 @@ class ResourceStore {
   private static final List<String> TERM_DEFINING_AXIOM_TYPECODES =
       Arrays.asList("class", "wff", "setvar");
   private static Cnst isProvable = null;
-  private static final int seqLimit = 421000; // 421000
+  private static final int seqLimit = Integer.MAX_VALUE; // 924021000; // 421000
 
   // Statement label (used to create the resource) to resources.
   final Map<String, TempTerm> termData = new HashMap<>();
@@ -234,7 +234,7 @@ class ResourceStore {
         .map(
             dvGroup ->
                 dvGroup.stream()
-                        .filter(var -> idsInProp.contains(var.getId()))
+                    .filter(var -> idsInProp.contains(var.getId()))
                     .sorted(Comparator.comparing(Var::getId))
                     .collect(toList()))
         .filter(dvGroup -> dvGroup.size() > 1)

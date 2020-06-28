@@ -672,9 +672,9 @@ public class GMFFManager {
             String existing = LATEXDEF_MAP.get(key);
             if (existing!=null && !existing.equals(value)) {
                 System.out.println("conflict in entry: " + key);
-                //throw new IllegalStateException("conflict in entry: " + key);
+            } else {
+                LATEXDEF_MAP.put(key, value);
             }
-            LATEXDEF_MAP.put(key, value);
         }
     }
     public static final Map<String,String> LATEXDEF_MAP = new HashMap<>();
