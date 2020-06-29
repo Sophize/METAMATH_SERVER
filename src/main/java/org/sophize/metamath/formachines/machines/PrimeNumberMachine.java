@@ -20,6 +20,7 @@ import static java.util.stream.Collectors.toList;
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
 import static org.sophize.metamath.formachines.ArgumentStep.fromSetMM;
 import static org.sophize.metamath.formachines.ArgumentStep.fromSetMMEphemeralReference;
+import static org.sophize.metamath.formachines.Databases.SET_DB;
 import static org.sophize.metamath.formachines.MachineUtils.*;
 
 public class PrimeNumberMachine extends MetamathMachine {
@@ -109,7 +110,7 @@ public class PrimeNumberMachine extends MetamathMachine {
         NNClosureMachine.getInstance(),
         CCClosureMachine.getInstance(),
         NNLessThanMachine.getInstance(),
-        NNSumProductExpressionMachine.getInstance());
+        NNSumProductEquationMachine.getInstance());
   }
 
   @Override
@@ -252,7 +253,7 @@ public class PrimeNumberMachine extends MetamathMachine {
     MetamathArgument lemmaArgument = primeLemmaAndArgument.getValue();
 
     MetamathArgument mainArgument =
-        getProofForLemma(proposition, primeLemma, Map.of("N", num.toString()));
+        getProofForLemma(proposition, primeLemma, SET_DB, Map.of("N", num.toString()));
 
     var machineArgs =
         Stream.concat(
@@ -320,7 +321,7 @@ public class PrimeNumberMachine extends MetamathMachine {
           fromSetMM(safeUse(NN0CNI), List.of(3), Map.of("A", numStr)), // 12
           fromSetMM(safeUse(SQVALI), List.of(12), Map.of("A", numStr)), // 13
           fromSetMMEphemeralReference(
-              squareValProp, NNSumProductExpressionMachine.getInstance()), // 14
+              squareValProp, NNSumProductEquationMachine.getInstance()), // 14
           fromSetMM( // 15
               safeUse(EQTRI), List.of(13, 14), Map.of("A", num2, "C", squareNum.toString())),
           ArgumentStep.fromSetMMHypothesis( // 16
@@ -433,7 +434,7 @@ public class PrimeNumberMachine extends MetamathMachine {
       if (setLabel.equals("cc")) return safeUse(CCClosureMachine.getInstance());
     }
     if (node.stmt.getLabel().equals("wceq")) {
-      return safeUse(NNSumProductExpressionMachine.getInstance());
+      return safeUse(NNSumProductEquationMachine.getInstance());
     }
     if (node.stmt.getLabel().equals("wbr")) {
       String relationLabel = node.child[2].stmt.getLabel();

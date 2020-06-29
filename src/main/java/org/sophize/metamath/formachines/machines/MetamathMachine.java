@@ -116,7 +116,7 @@ public abstract class MetamathMachine {
         continue;
       }
       char next = s.charAt(i + 1);
-      if (isUpperCase(current) && isLowerCase(next)) formatted.append(" ");
+      if (i > 0 && isUpperCase(current) && isLowerCase(next)) formatted.append(" ");
       formatted.append(current);
     }
     return formatted.toString();

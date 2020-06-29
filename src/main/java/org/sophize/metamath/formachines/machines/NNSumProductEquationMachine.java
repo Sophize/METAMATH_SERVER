@@ -22,12 +22,12 @@ import static org.sophize.metamath.formachines.NumberRepresentation.DECIMAL_10;
 import static org.sophize.metamath.formachines.NumberRepresentation.PRIMITIVE_10;
 import static org.sophize.metamath.formachines.ParseNodeHelpers.*;
 
-public class NNSumProductExpressionMachine extends MetamathMachine {
-  private static NNSumProductExpressionMachine instance = new NNSumProductExpressionMachine();
+public class NNSumProductEquationMachine extends MetamathMachine {
+  private static NNSumProductEquationMachine instance = new NNSumProductEquationMachine();
 
-  private NNSumProductExpressionMachine() {}
+  private NNSumProductEquationMachine() {}
 
-  public static NNSumProductExpressionMachine getInstance() {
+  public static NNSumProductEquationMachine getInstance() {
     return instance;
   }
 
@@ -426,7 +426,7 @@ public class NNSumProductExpressionMachine extends MetamathMachine {
       if (setLabel.equals("cc")) return safeUse(CCClosureMachine.getInstance());
     }
     if (node.stmt.getLabel().equals("wceq")) {
-      return safeUse(NNSumProductExpressionMachine.getInstance());
+      return safeUse(NNSumProductEquationMachine.getInstance());
     }
     return null;
   }
