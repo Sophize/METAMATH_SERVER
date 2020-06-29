@@ -58,9 +58,13 @@ public abstract class MetamathMachine {
   public MetamathProposition parseStrict(Proposition proposition) {
     if (proposition.getLanguage() != Language.METAMATH_SET_MM) return null;
     String statement = MachineUtils.stripPropositionMarker(proposition.getStatement());
-    var parsedStmt = MachineUtils.parseStatement(statement, SET_DB, new VarHyp[0]);
-    if (parsedStmt == null) return null;
-    return new MetamathProposition(parsedStmt);
+    try {
+      var parsedStmt = MachineUtils.parseStatement(statement, SET_DB, new VarHyp[0]);
+      if (parsedStmt == null) return null;
+      return new MetamathProposition(parsedStmt);
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   // Override this function when the assignablePtr of a machine needs to be changed.

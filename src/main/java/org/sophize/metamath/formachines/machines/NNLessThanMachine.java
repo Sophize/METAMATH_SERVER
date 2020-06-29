@@ -219,7 +219,7 @@ public class NNLessThanMachine extends MetamathMachine {
 
   private MetamathMachine machineDeterminer(ParseNode node) {
     if (node.stmt.getLabel().equals("wbr")) {
-      var relationLabel = node.child[1].stmt.getLabel();
+      var relationLabel = node.child[2].stmt.getLabel();
       if (relationLabel.equals("clt")) return safeUse(NNLessThanMachine.getInstance());
     }
     if (node.stmt.getLabel().equals("wcel")) {

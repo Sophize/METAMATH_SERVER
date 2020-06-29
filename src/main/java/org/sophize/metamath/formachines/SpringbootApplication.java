@@ -41,7 +41,7 @@ public class SpringbootApplication {
     return "Hello to the world from METAMATH_SERVER!";
   }
 
-  @PostMapping("/machine_request")
+  @PostMapping("/proof_request")
   public ProofResponse ProofRequest(@RequestBody ProofRequest request) {
     MachineId machineId = MachineId.fromValue(request.getMachinePtr());
     if (machineId == null) {
