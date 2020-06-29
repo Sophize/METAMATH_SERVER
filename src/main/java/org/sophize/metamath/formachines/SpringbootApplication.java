@@ -2,8 +2,8 @@ package org.sophize.metamath.formachines;
 
 import com.google.common.base.Strings;
 import mmj.util.BatchMMJ2;
-import org.sophize.datamodel.MachineRequest;
-import org.sophize.datamodel.MachineResponse;
+import org.sophize.datamodel.ProofRequest;
+import org.sophize.datamodel.ProofResponse;
 import org.sophize.datamodel.TruthValue;
 import org.sophize.metamath.Utils;
 import org.sophize.metamath.formachines.machines.MetamathMachine;
@@ -42,7 +42,7 @@ public class SpringbootApplication {
   }
 
   @PostMapping("/machine_request")
-  public MachineResponse machineRequest(@RequestBody MachineRequest request) {
+  public ProofResponse ProofRequest(@RequestBody ProofRequest request) {
     MachineId machineId = MachineId.fromValue(request.getMachinePtr());
     if (machineId == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Machine not managed by this server");
@@ -57,27 +57,26 @@ public class SpringbootApplication {
     return ex.getMessage();
   }
 
-  private static MachineResponse getResponseFromMachine(MetamathMachine m, MachineRequest request) {
+  private static ProofResponse getResponseFromMachine(MetamathMachine m, ProofRequest request) {
     if (request == null
         || request.getProposition() == null
         || Strings.isNullOrEmpty(request.getProposition().toString())) {
       return MachineUtils.responseWithMessage(UNKNOWN, "Proposition provided is empty");
     }
     MetamathProposition parsed = m.parseStrict(request.getProposition());
-    if (parsed == null && Utils.isTrue(request.getTryCompletingProposition())) {
+    if (parsed == null && Utils.isTrue(request.getParseLenient())) {
       parsed = m.parseLenient(request.getProposition());
     }
     if (parsed == null) {
       String reason = "The provided expression doesn't parse.";
-      if (Utils.isTrue(request.getTryCompletingProposition()))
-        reason = "Couldn't understand the input.";
+      if (Utils.isTrue(request.getParseLenient())) reason = "Couldn't understand the input.";
       return MachineUtils.responseWithMessage(UNKNOWN, reason);
     }
     String notProvableJustification = m.getNotProvableReason(parsed);
     if (notProvableJustification != null) {
       return MachineUtils.responseWithMessage(UNKNOWN, notProvableJustification);
     }
-    if (!isTrue(request.getFetchProof()) && !isTrue(request.getTryCompletingProposition())) {
+    if (!isTrue(request.getFetchProof()) && !isTrue(request.getParseLenient())) {
       return MachineUtils.responseWithMessage(TRUE, "");
     }
 
@@ -85,7 +84,7 @@ public class SpringbootApplication {
     proof = new ProofCollapser(ProofExpander.expand(proof, parsed)).compress(parsed);
 
     var existingPropositionPtr = proof.getExistingPropositionPtr();
-    MachineResponse response = new MachineResponse();
+    ProofResponse response = new ProofResponse();
     response.setTruthValue(TruthValue.TRUE);
     if (existingPropositionPtr != null) {
       response.setExistingPropositionPtr(existingPropositionPtr.toString());

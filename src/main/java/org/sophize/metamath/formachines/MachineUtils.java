@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import mmj.lang.*;
 import mmj.verify.Grammar;
-import org.sophize.datamodel.MachineResponse;
+import org.sophize.datamodel.ProofResponse;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.datamodel.ResourceType;
 import org.sophize.datamodel.TruthValue;
@@ -89,8 +89,8 @@ public class MachineUtils {
         .collect(Collectors.toList());
   }
 
-  static MachineResponse responseWithMessage(TruthValue value, String message) {
-    MachineResponse response = new MachineResponse();
+  static ProofResponse responseWithMessage(TruthValue value, String message) {
+    ProofResponse response = new ProofResponse();
     response.setTruthValue(value);
     response.setMessage(message);
     return response;
