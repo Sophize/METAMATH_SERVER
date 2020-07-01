@@ -130,6 +130,7 @@ public class ResourceWriter {
     GMFFManager.LATEXDEF_MAP.put("wff", "\\scriptsize\\color{#999} {\\rm wff}");
     GMFFManager.LATEXDEF_MAP.put("class", "\\scriptsize\\color{#999} {\\rm class}");
     GMFFManager.LATEXDEF_MAP.put("|", "\\vert");
+    GMFFManager.LATEXDEF_MAP.put("#", "\\#");
 
     Files.createDirectories(Paths.get(OUTPUT_DIRECTORY));
     try (PrintStream out =

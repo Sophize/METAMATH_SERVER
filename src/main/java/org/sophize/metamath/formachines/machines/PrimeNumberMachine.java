@@ -129,7 +129,7 @@ public class PrimeNumberMachine extends MetamathMachine {
     if (number == null) return null;
     boolean isPrime = isPrime(number.number);
     String statement =
-        MessageFormat.format("|-{0} {1} e. Prime", isPrime ? "" : " .-", number.toString());
+        MessageFormat.format("|-{0} {1} e. Prime", isPrime ? "" : " -.", number.toString());
     proposition.setLanguage(Language.METAMATH_SET_MM);
     proposition.setStatement(statement);
     return parseStrict(proposition);
