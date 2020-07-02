@@ -173,7 +173,7 @@ class ResourceStore {
   }
 
   private static Beliefset getDefaultBeliefset(
-      Grammar grammar, String beliefsetName, Map<String, TempProposition> propositionData) {
+      Grammar grammar, String datasetName, Map<String, TempProposition> propositionData) {
     List<String> axioms = new ArrayList<>();
     for (Map.Entry<String, Stmt> entry : grammar.stmtTbl.entrySet()) {
       Stmt stmt = entry.getValue();
@@ -184,7 +184,9 @@ class ResourceStore {
       axioms.add("#P_" + stmt.getLabel());
     }
     Beliefset beliefset = new Beliefset();
-    beliefset.setNames(new String[] {beliefsetName});
+    beliefset.setNames(new String[] {datasetName});
+    beliefset.setIndexable(true);
+    beliefset.setDescription("Belief set with all axioms and definitions from " + datasetName);
     beliefset.setUnsupportedPropositionPtrs(axioms.toArray(new String[0]));
     return beliefset;
   }
