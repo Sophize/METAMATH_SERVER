@@ -54,7 +54,7 @@ public class NNSumMachine extends MetamathMachine {
 
   @Override
   public String getDescription() {
-    return "To get proofs for statements like |- ( ; 1 3 + 8 ) = ; 2 1\n"
+    return "To get proofs for statements like |- ( ; 1 3 + 8 ) = ; 2 1\n\n"
         + "Also supports statements of type |- ( ( A + B ) + 1 ) = C";
   }
 

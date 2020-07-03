@@ -36,7 +36,7 @@ public class NNClosureMachine extends MetamathMachine {
 
   @Override
   public String getDescription() {
-    return "This machine generates proofs of membership in the set of natural numbers (NN).\n"
+    return "This machine generates proofs of membership in the set of natural numbers (NN). "
         + "Eg. |- ; 2 1 e. NN";
   }
 

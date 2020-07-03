@@ -64,7 +64,7 @@ public class NNSumProductEquationMachine extends MetamathMachine {
 
   @Override
   public String getDescription() {
-    return "This machine generates proofs of equations involving sum and product of natural numbers";
+    return "This machine generates proofs of equations involving sum and product of natural numbers.";
   }
 
   @Override

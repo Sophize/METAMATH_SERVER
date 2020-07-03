@@ -89,7 +89,7 @@ public abstract class MetamathMachine {
     if (getPermanentPtr() != null) machine.setPermanentPtr(getAssignablePtr().toString());
     machine.setAssignablePtr(getAssignablePtr().toString());
     machine.setDefaultMaterializeDataset(DEFAULT_MATERIALIZE_DATASET);
-    machine.setDescription(getDescription());
+    machine.setDescription(getDescription() + implementationInfo());
     machine.setDefaultLanguage(getDefaultLanguage());
     machine.setDefaultStrictStatement(getDefaultStrictStatement());
     machine.setDefaultLenientStatement(getDefaultLenientStatement());
@@ -109,6 +109,13 @@ public abstract class MetamathMachine {
   final MetamathMachine safeUse(MetamathMachine machine) {
     Preconditions.checkArgument(machine == this || getPremiseMachines().contains(machine));
     return machine;
+  }
+
+  private String implementationInfo() {
+    return "\n\nSee implementation at "
+        + "https://github.com/Sophize/METAMATH_SERVER/blob/master/src/main/java/org/sophize/metamath/formachines/machines/"
+        + getClass().getSimpleName()
+        + ".java";
   }
 
   private static String toSentenceCase(String s) {

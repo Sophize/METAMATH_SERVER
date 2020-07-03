@@ -37,8 +37,8 @@ public class CCClosureMachine extends MetamathMachine {
 
   @Override
   public String getDescription() {
-    return "This machine generates proofs of membership in the set of complex numbers.\n"
-        + "Eg. |- ; 2 1 e. NN\n"
+    return "This machine generates proofs of membership in the set of complex numbers. "
+        + "Eg. |- ; 2 1 e. NN\n\n"
         + "*Currently, this machine only works positive integers*";
   }
 
