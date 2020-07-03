@@ -88,7 +88,8 @@ public class ResourceWriter {
 
     Map<String, Beliefset> beliefsets = new HashMap<>();
     fixAxioms(firstStore.defaultBeliefset, new HashMap<>());
-    beliefsets.put("default", firstStore.defaultBeliefset);
+    firstStore.defaultBeliefset.setPermanentPtr("#metamath/B.default");
+    beliefsets.put(firstStore.defaultBeliefset.getNames()[0], firstStore.defaultBeliefset);
 
     for (int i = 1; i < stores.size(); i++) {
       ResourceStore store = stores.get(i);

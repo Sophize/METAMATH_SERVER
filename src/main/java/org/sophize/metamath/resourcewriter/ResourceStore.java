@@ -183,8 +183,10 @@ class ResourceStore {
       myAssert(propositionData.containsKey(stmt.getLabel()));
       axioms.add("#P_" + stmt.getLabel());
     }
+    String name = datasetName;
+    if (name.endsWith(".mm")) name = name.substring(0, name.length() - ".mm".length());
     Beliefset beliefset = new Beliefset();
-    beliefset.setNames(new String[] {datasetName});
+    beliefset.setNames(new String[] {name});
     beliefset.setIndexable(true);
     beliefset.setDescription("Belief set with all axioms and definitions from " + datasetName);
     beliefset.setUnsupportedPropositionPtrs(axioms.toArray(new String[0]));
