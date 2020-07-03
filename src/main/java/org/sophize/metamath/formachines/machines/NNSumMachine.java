@@ -60,7 +60,7 @@ public class NNSumMachine extends MetamathMachine {
 
   @Override
   public String getDefaultStrictStatement() {
-    return "|- ( ; 1 6 + ; 1 9 ) < ; 3 5";
+    return "|- ( ; 1 6 + ; 1 9 ) = ; 3 5";
   }
 
   @Override

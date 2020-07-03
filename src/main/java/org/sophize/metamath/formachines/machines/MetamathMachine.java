@@ -112,10 +112,11 @@ public abstract class MetamathMachine {
   }
 
   private String implementationInfo() {
-    return "\n\nSee implementation at "
-        + "https://github.com/Sophize/METAMATH_SERVER/blob/master/src/main/java/org/sophize/metamath/formachines/machines/"
+    return "\n\nSee implementation on [GitHub]"
+        + "(https://github.com/Sophize/METAMATH_SERVER/blob/master/"
+        + "src/main/java/org/sophize/metamath/formachines/machines/"
         + getClass().getSimpleName()
-        + ".java";
+        + ".java).";
   }
 
   private static String toSentenceCase(String s) {
