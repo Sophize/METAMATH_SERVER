@@ -1,4 +1,4 @@
-package org.sophize.metamath.formachines.machines;
+package org.sophize.metamath.server.machines;
 
 import com.google.common.base.Preconditions;
 import mmj.lang.Assrt;
@@ -7,7 +7,7 @@ import mmj.lang.Stmt;
 import org.sophize.datamodel.Proposition;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.Utils;
-import org.sophize.metamath.formachines.*;
+import org.sophize.metamath.server.*;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -19,9 +19,9 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
-import static org.sophize.metamath.formachines.MachineUtils.getProofForSetMMAssrt;
-import static org.sophize.metamath.formachines.MachineUtils.parseSetMMStatement;
-import static org.sophize.metamath.formachines.ParseNodeHelpers.*;
+import static org.sophize.metamath.server.MachineUtils.getProofForSetMMAssrt;
+import static org.sophize.metamath.server.MachineUtils.parseSetMMStatement;
+import static org.sophize.metamath.server.ParseNodeHelpers.*;
 
 public class NNSumMachine extends MetamathMachine {
   private static NNSumMachine instance = new NNSumMachine();

@@ -1,4 +1,4 @@
-package org.sophize.metamath.formachines.machines;
+package org.sophize.metamath.server.machines;
 
 import com.google.common.base.Preconditions;
 import mmj.lang.ParseNode;
@@ -6,7 +6,7 @@ import mmj.lang.Stmt;
 import org.sophize.datamodel.Language;
 import org.sophize.datamodel.Proposition;
 import org.sophize.datamodel.ResourcePointer;
-import org.sophize.metamath.formachines.*;
+import org.sophize.metamath.server.*;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
-import static org.sophize.metamath.formachines.MachineUtils.getDigitsLenient;
+import static org.sophize.metamath.server.MachineUtils.getDigitsLenient;
 
 public class NN0ClosureMachine extends MetamathMachine {
   private static NN0ClosureMachine instance = new NN0ClosureMachine();

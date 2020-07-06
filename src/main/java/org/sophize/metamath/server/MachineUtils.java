@@ -1,4 +1,4 @@
-package org.sophize.metamath.formachines;
+package org.sophize.metamath.server;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -17,7 +17,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
 import static org.sophize.metamath.Utils.getLookupTermsForParseNode;
-import static org.sophize.metamath.formachines.Databases.SET_DB;
+import static org.sophize.metamath.server.Databases.SET_DB;
 
 public class MachineUtils {
   // So far we have needed only these two variable hypothesis for parsing the statement needed by

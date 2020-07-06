@@ -1,4 +1,4 @@
-package org.sophize.metamath.formachines.machines;
+package org.sophize.metamath.server.machines;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
@@ -8,7 +8,7 @@ import mmj.lang.Stmt;
 import org.sophize.datamodel.Language;
 import org.sophize.datamodel.Proposition;
 import org.sophize.datamodel.ResourcePointer;
-import org.sophize.metamath.formachines.*;
+import org.sophize.metamath.server.*;
 
 import javax.annotation.Nonnull;
 import java.text.MessageFormat;
@@ -18,10 +18,10 @@ import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
-import static org.sophize.metamath.formachines.ArgumentStep.fromSetMM;
-import static org.sophize.metamath.formachines.ArgumentStep.fromSetMMEphemeralReference;
-import static org.sophize.metamath.formachines.Databases.SET_DB;
-import static org.sophize.metamath.formachines.MachineUtils.*;
+import static org.sophize.metamath.server.ArgumentStep.fromSetMM;
+import static org.sophize.metamath.server.ArgumentStep.fromSetMMEphemeralReference;
+import static org.sophize.metamath.server.Databases.SET_DB;
+import static org.sophize.metamath.server.MachineUtils.*;
 
 public class PrimeNumberMachine extends MetamathMachine {
   private static PrimeNumberMachine instance = new PrimeNumberMachine();

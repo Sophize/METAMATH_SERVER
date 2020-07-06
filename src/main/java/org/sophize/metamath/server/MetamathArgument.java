@@ -1,4 +1,4 @@
-package org.sophize.metamath.formachines;
+package org.sophize.metamath.server;
 
 import mmj.lang.Var;
 import org.sophize.datamodel.Argument;
@@ -6,7 +6,7 @@ import org.sophize.datamodel.Language;
 import org.sophize.datamodel.MetaLanguage;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.Utils;
-import org.sophize.metamath.formachines.machines.MetamathMachine;
+import org.sophize.metamath.server.machines.MetamathMachine;
 
 import java.util.ArrayList;
 import java.util.List;

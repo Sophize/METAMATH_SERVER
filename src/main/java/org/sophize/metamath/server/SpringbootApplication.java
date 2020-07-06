@@ -1,4 +1,4 @@
-package org.sophize.metamath.formachines;
+package org.sophize.metamath.server;
 
 import com.google.common.base.Strings;
 import mmj.util.BatchMMJ2;
@@ -6,7 +6,7 @@ import org.sophize.datamodel.ProofRequest;
 import org.sophize.datamodel.ProofResponse;
 import org.sophize.datamodel.TruthValue;
 import org.sophize.metamath.Utils;
-import org.sophize.metamath.formachines.machines.MetamathMachine;
+import org.sophize.metamath.server.machines.MetamathMachine;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;

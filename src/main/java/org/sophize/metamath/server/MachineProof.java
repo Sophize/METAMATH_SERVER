@@ -1,11 +1,11 @@
-package org.sophize.metamath.formachines;
+package org.sophize.metamath.server;
 
 import mmj.lang.Stmt;
 import org.sophize.datamodel.Argument;
 import org.sophize.datamodel.Proposition;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.datamodel.ResourceType;
-import org.sophize.metamath.formachines.machines.MetamathMachine;
+import org.sophize.metamath.server.machines.MetamathMachine;
 
 import java.util.Collections;
 import java.util.List;

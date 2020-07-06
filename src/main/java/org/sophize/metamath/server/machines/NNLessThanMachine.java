@@ -1,11 +1,11 @@
-package org.sophize.metamath.formachines.machines;
+package org.sophize.metamath.server.machines;
 
 import com.google.common.base.Preconditions;
 import mmj.lang.Assrt;
 import mmj.lang.ParseNode;
 import mmj.lang.Stmt;
 import org.sophize.datamodel.Proposition;
-import org.sophize.metamath.formachines.*;
+import org.sophize.metamath.server.*;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -15,10 +15,10 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
-import static org.sophize.metamath.formachines.MachineUtils.getDigitsLenient;
-import static org.sophize.metamath.formachines.MachineUtils.getProofForSetMMAssrt;
-import static org.sophize.metamath.formachines.NumberRepresentation.DECIMAL_10;
-import static org.sophize.metamath.formachines.NumberRepresentation.PRIMITIVE_10;
+import static org.sophize.metamath.server.MachineUtils.getDigitsLenient;
+import static org.sophize.metamath.server.MachineUtils.getProofForSetMMAssrt;
+import static org.sophize.metamath.server.NumberRepresentation.DECIMAL_10;
+import static org.sophize.metamath.server.NumberRepresentation.PRIMITIVE_10;
 
 public class NNLessThanMachine extends MetamathMachine {
   private static NNLessThanMachine instance = new NNLessThanMachine();

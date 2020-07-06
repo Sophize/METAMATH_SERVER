@@ -1,4 +1,4 @@
-package org.sophize.metamath.formachines;
+package org.sophize.metamath.server;
 
 import mmj.lang.ParseNode;
 import mmj.lang.Sym;

@@ -1,4 +1,4 @@
-package org.sophize.metamath.formachines.machines;
+package org.sophize.metamath.server.machines;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Streams;
@@ -6,7 +6,7 @@ import mmj.lang.Assrt;
 import mmj.lang.ParseNode;
 import mmj.lang.Stmt;
 import org.sophize.datamodel.Proposition;
-import org.sophize.metamath.formachines.*;
+import org.sophize.metamath.server.*;
 
 import javax.annotation.Nonnull;
 import java.text.MessageFormat;
@@ -17,10 +17,10 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import static org.sophize.metamath.formachines.MachineUtils.getProofForSetMMAssrt;
-import static org.sophize.metamath.formachines.NumberRepresentation.DECIMAL_10;
-import static org.sophize.metamath.formachines.NumberRepresentation.PRIMITIVE_10;
-import static org.sophize.metamath.formachines.ParseNodeHelpers.*;
+import static org.sophize.metamath.server.MachineUtils.getProofForSetMMAssrt;
+import static org.sophize.metamath.server.NumberRepresentation.DECIMAL_10;
+import static org.sophize.metamath.server.NumberRepresentation.PRIMITIVE_10;
+import static org.sophize.metamath.server.ParseNodeHelpers.*;
 
 public class NNSumProductEquationMachine extends MetamathMachine {
   private static NNSumProductEquationMachine instance = new NNSumProductEquationMachine();

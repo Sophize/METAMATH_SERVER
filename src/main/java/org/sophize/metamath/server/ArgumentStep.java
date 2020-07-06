@@ -1,4 +1,4 @@
-package org.sophize.metamath.formachines;
+package org.sophize.metamath.server;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -6,7 +6,7 @@ import mmj.lang.Assrt;
 import mmj.lang.Stmt;
 import org.sophize.datamodel.ResourcePointer;
 import org.sophize.metamath.Utils;
-import org.sophize.metamath.formachines.machines.MetamathMachine;
+import org.sophize.metamath.server.machines.MetamathMachine;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 import static org.sophize.datamodel.ResourceType.PROPOSITION;
 import static org.sophize.metamath.Utils.getLookupTermsForParseNode;
-import static org.sophize.metamath.formachines.Databases.SET_DB;
+import static org.sophize.metamath.server.Databases.SET_DB;
 
 public class ArgumentStep {
 

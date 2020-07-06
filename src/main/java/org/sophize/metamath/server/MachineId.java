@@ -1,6 +1,6 @@
-package org.sophize.metamath.formachines;
+package org.sophize.metamath.server;
 
-import org.sophize.metamath.formachines.machines.*;
+import org.sophize.metamath.server.machines.*;
 
 import java.util.Arrays;
 import java.util.Map;

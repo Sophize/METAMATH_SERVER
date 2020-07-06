@@ -1,4 +1,4 @@
-package org.sophize.metamath.formachines.machines;
+package org.sophize.metamath.server.machines;
 
 import com.google.common.base.Preconditions;
 import mmj.lang.Stmt;
@@ -7,9 +7,9 @@ import org.sophize.datamodel.Language;
 import org.sophize.datamodel.Machine;
 import org.sophize.datamodel.Proposition;
 import org.sophize.datamodel.ResourcePointer;
-import org.sophize.metamath.formachines.MachineProof;
-import org.sophize.metamath.formachines.MachineUtils;
-import org.sophize.metamath.formachines.MetamathProposition;
+import org.sophize.metamath.server.MachineProof;
+import org.sophize.metamath.server.MachineUtils;
+import org.sophize.metamath.server.MetamathProposition;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import static java.lang.Character.isUpperCase;
 import static java.util.stream.Collectors.toList;
 import static org.sophize.datamodel.ResourcePointer.PointerType.ASSIGNABLE;
 import static org.sophize.datamodel.ResourceType.MACHINE;
-import static org.sophize.metamath.formachines.Databases.SET_DB;
+import static org.sophize.metamath.server.Databases.SET_DB;
 
 public abstract class MetamathMachine {
 
@@ -114,7 +114,7 @@ public abstract class MetamathMachine {
   private String implementationInfo() {
     return "\n\nSee implementation on [GitHub]"
         + "(https://github.com/Sophize/METAMATH_SERVER/blob/master/"
-        + "src/main/java/org/sophize/metamath/formachines/machines/"
+        + "src/main/java/org/sophize/metamath/server/machines/"
         + getClass().getSimpleName()
         + ".java).";
   }

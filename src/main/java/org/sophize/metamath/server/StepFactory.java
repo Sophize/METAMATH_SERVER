@@ -1,9 +1,9 @@
-package org.sophize.metamath.formachines;
+package org.sophize.metamath.server;
 
 import com.google.common.base.Preconditions;
 import mmj.lang.Assrt;
 import mmj.lang.ParseNode;
-import org.sophize.metamath.formachines.machines.MetamathMachine;
+import org.sophize.metamath.server.machines.MetamathMachine;
 
 import java.util.List;
 import java.util.Map;
