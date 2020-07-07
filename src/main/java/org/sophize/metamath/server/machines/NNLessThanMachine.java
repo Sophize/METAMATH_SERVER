@@ -87,10 +87,11 @@ public class NNLessThanMachine extends MetamathMachine {
       if (lessThanLoc <= 0) return null;
       List<Integer> operand1Digits = getDigitsLenient(stmt.substring(0, lessThanLoc));
       List<Integer> operand2Digits = getDigitsLenient(stmt.substring(lessThanLoc + 1));
-      if (operand1Digits == null || operand2Digits == null) return null;
 
       var operand1 = NumberRepresentation.fromDigits(operand1Digits);
       var operand2 = NumberRepresentation.fromDigits(operand2Digits);
+
+      if (operand1 == null || operand2 == null) return null;
 
       proposition.setStatement("|- " + operand1 + " < " + operand2);
       return parseStrict(proposition);

@@ -10,6 +10,7 @@ import org.sophize.metamath.Utils;
 import org.sophize.metamath.server.*;
 
 import javax.annotation.Nonnull;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +20,7 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static org.sophize.datamodel.ResourceType.ARGUMENT;
-import static org.sophize.metamath.server.MachineUtils.getProofForSetMMAssrt;
-import static org.sophize.metamath.server.MachineUtils.parseSetMMStatement;
+import static org.sophize.metamath.server.MachineUtils.*;
 import static org.sophize.metamath.server.ParseNodeHelpers.*;
 
 public class NNSumMachine extends MetamathMachine {
@@ -65,7 +65,7 @@ public class NNSumMachine extends MetamathMachine {
 
   @Override
   public String getDefaultLenientStatement() {
-    return "Not supported";
+    return "28 + 157";
   }
 
   @Override
@@ -83,7 +83,41 @@ public class NNSumMachine extends MetamathMachine {
 
   @Override
   public MetamathProposition parseLenient(@Nonnull Proposition proposition) {
-    return null; // TODO: implement
+    try {
+      String stmt = proposition.getStatement();
+      int plusLocation = stmt.indexOf("+");
+      if (plusLocation <= 0) return null;
+      var operand1Digits = getDigitsLenient(stmt.substring(0, plusLocation));
+
+      int equalToLocation = stmt.indexOf("=");
+      boolean hasResult = true;
+      int secondOpEndLoc = equalToLocation;
+      if (equalToLocation == -1) {
+        secondOpEndLoc = stmt.length();
+        hasResult = false;
+      } else if (equalToLocation < plusLocation + 2) {
+        return null;
+      }
+      var operand2Digits = getDigitsLenient(stmt.substring(plusLocation + 1, secondOpEndLoc));
+
+      var operand1 = NumberRepresentation.fromDigits(operand1Digits);
+      var operand2 = NumberRepresentation.fromDigits(operand2Digits);
+      if (operand1 == null || operand2 == null) return null;
+      NumberRepresentation result;
+      if (hasResult) {
+        var resultDigits = getDigitsLenient(stmt.substring(equalToLocation + 1));
+        result = NumberRepresentation.fromDigits(resultDigits);
+      } else {
+        result = new NumberRepresentation(operand1.number + operand2.number);
+      }
+      if (result == null) return null;
+
+      proposition.setStatement(
+          MessageFormat.format("|- ( {0} + {1} ) = {2}", operand1, operand2, result));
+      return parseStrict(proposition);
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   @Override
