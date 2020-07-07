@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static org.sophize.metamath.Utils.*;
+import static org.sophize.metamath.resourcewriter.Constants.MINIMAL_AXIOMS;
 import static org.sophize.metamath.resourcewriter.Helpers.areSameProps;
 
 class ResourceStore {
@@ -17,7 +18,7 @@ class ResourceStore {
   private static final List<String> TERM_DEFINING_AXIOM_TYPECODES =
       Arrays.asList("class", "wff", "setvar");
   private static Cnst isProvable = null;
-  private static final int seqLimit = Integer.MAX_VALUE; // 924021000; // 421000
+  private int seqLimit = Integer.MAX_VALUE; // 924021000; // 421000
 
   // Statement label (used to create the resource) to resources.
   final Map<String, TempTerm> termData = new HashMap<>();
@@ -29,6 +30,7 @@ class ResourceStore {
 
   // All axioms (with typecode |-) in the Grammar.
   Beliefset defaultBeliefset = null;
+  Beliefset minimalBeliefset = null;
 
   private final Map<String, String> alternateToOriginalStmt = new HashMap<>();
   private final String databaseName;
@@ -50,9 +52,12 @@ class ResourceStore {
             .collect(toList());
 
     addTerms(orderedStmts);
-    addPropositions(orderedStmts, grammar.symTbl);
+    addPropositions(orderedStmts, grammar);
+    defaultBeliefset = getDefaultBeliefset(orderedStmts, databaseName, propositionData, false);
+    if (databaseName.equals("set.mm")) { // TODO: add minimal for iset.mm too.
+      minimalBeliefset = getDefaultBeliefset(orderedStmts, databaseName, propositionData, true);
+    }
     addArguments(orderedStmts, grammar);
-    defaultBeliefset = getDefaultBeliefset(grammar, databaseName, propositionData);
   }
 
   private void addTerms(List<Stmt> orderedStmts) {
@@ -93,57 +98,58 @@ class ResourceStore {
     myAssert(constIndex == numConstChars);
   }
 
-  private void addPropositions(List<Stmt> orderedStmts, Map<String, Sym> symTbl) {
+  private void addPropositions(List<Stmt> orderedStmts, Grammar grammar) {
     for (Stmt stmt : orderedStmts) {
       Assrt assrt = getPropositionAssrt(stmt);
       if (assrt == null) continue;
       if (stmt.getSeq() % 1000000 == 0) System.out.println("prop seq: " + stmt.getSeq());
-      List<List<Var>> distinctVars = getDistinctAndSaveDummyVariables(assrt, symTbl);
+      List<List<Var>> distinctVars = getDistinctAndSaveDummyVariables(assrt, grammar.symTbl);
       TempProposition prop = new TempProposition(assrt, distinctVars);
       propositionData.put(assrt.getLabel(), prop);
     }
+    Map<Integer, List<Assrt>> stmtHashes = new HashMap<>();
     for (Stmt stmt : orderedStmts) {
       Assrt assrt = getPropositionAssrt(stmt);
       if (assrt == null) continue;
-      if (stmt.getSeq() % 1000000 == 0) System.out.println("dup seq: " + stmt.getSeq());
-      String label = assrt.getLabel();
-      boolean canBeUnprocessedDuplicate =
-          (label.contains("ALT") || label.contains("OLD"))
-              && !alternateToOriginalStmt.containsKey(label)
-              && !alternateToOriginalStmt.values().contains(label);
-      if (canBeUnprocessedDuplicate) {
-        addDuplicatesToMap(assrt, orderedStmts);
+      int hash = stmt.getFormula().hashCode();
+      if (stmtHashes.containsKey(hash)) {
+        stmtHashes.get(hash).add(assrt);
+      } else {
+        stmtHashes.put(hash, new ArrayList<>(List.of(assrt)));
       }
+    }
+    for (var hashVals : stmtHashes.values()) {
+      List<Assrt> candidates = new ArrayList<>(hashVals);
+      while (candidates.size() > 1) candidates = addDuplicatesToMap(candidates);
     }
     for (String alternate : alternateToOriginalStmt.keySet()) {
       propositionData.remove(alternate);
     }
   }
 
-  private static Assrt getPropositionAssrt(Stmt stmt) {
+  private Assrt getPropositionAssrt(Stmt stmt) {
     if (!(stmt instanceof Assrt)) return null;
     if (!stmt.getFormula().getSym()[0].getId().equals("|-")) return null;
     if (stmt.getSeq() > seqLimit) return null;
     return (Assrt) stmt;
   }
 
-  private void addDuplicatesToMap(Assrt assrt, List<Stmt> orderedStmts) {
-    // Some proofs don't have a non-ALT version. Eg. trsspwALT1, trsspwALT2, trsspwALT3
-    if (assrt instanceof Axiom) return;
+  private List<Assrt> addDuplicatesToMap(List<Assrt> candidates) {
     Set<Assrt> duplicates = new HashSet<>();
-    duplicates.add(assrt);
-    for (Stmt candidate : orderedStmts) {
-      if (candidate == assrt) continue;
-      Assrt originalCandidate = getPropositionAssrt(candidate);
-      if (originalCandidate != null
-          && areSameProps(
-              propositionData.get(assrt.getLabel()), propositionData.get(candidate.getLabel()))) {
-        if (originalCandidate instanceof Axiom) return; // Don't deduplicate axioms.
-        duplicates.add(originalCandidate);
-      }
+    List<Assrt> remaining = new ArrayList<>();
+    Assrt first = candidates.get(0);
+    duplicates.add(first);
+    for (int i = 1; i < candidates.size(); i++) {
+      var candidate = candidates.get(i);
+      boolean isIdentical =
+          areSameProps(
+              propositionData.get(first.getLabel()), propositionData.get(candidate.getLabel()));
+
+      if (isIdentical) duplicates.add(candidate);
+      else remaining.add(candidate);
     }
-    if (duplicates.size() <= 1) return;
-    Assrt original = findOriginal(duplicates);
+    if (duplicates.size() <= 1) return remaining;
+    Assrt original = findOriginal(duplicates, MINIMAL_AXIOMS.get(databaseName));
     for (Assrt duplicate : duplicates) {
       if (duplicate == original) continue;
       putIfNotDifferent(alternateToOriginalStmt, duplicate.getLabel(), original.getLabel());
@@ -158,11 +164,21 @@ class ResourceStore {
         alternateToOriginalStmt.put(alternateHypId, originalHypId);
       }
     }
+    return remaining;
   }
 
-  private static Assrt findOriginal(Set<Assrt> duplicates) {
+  private static Assrt findOriginal(Set<Assrt> duplicates, List<String> minimalAxioms) {
     List<Assrt> sortedDuplicates =
         duplicates.stream().sorted(Comparator.comparing(Stmt::getSeq)).collect(toList());
+    var axioms =
+        sortedDuplicates.stream().filter(assrt -> assrt instanceof Axiom).collect(toList());
+    if (axioms.size() > 0) {
+      myAssert(axioms.size() == 1);
+      if (sortedDuplicates.get(0) instanceof Axiom) return sortedDuplicates.get(0);
+
+      myAssert(!minimalAxioms.contains(axioms.get(0).getLabel()));
+      sortedDuplicates.removeIf(assrt -> assrt instanceof Axiom);
+    }
     Assrt smallestLabel = null;
     for (var assrt : sortedDuplicates) {
       if (smallestLabel == null || smallestLabel.getLabel().length() > assrt.getLabel().length()) {
@@ -172,24 +188,36 @@ class ResourceStore {
     return smallestLabel;
   }
 
-  private static Beliefset getDefaultBeliefset(
-      Grammar grammar, String datasetName, Map<String, TempProposition> propositionData) {
+  private Beliefset getDefaultBeliefset(
+      List<Stmt> orderedStmts,
+      String datasetName,
+      Map<String, TempProposition> propositionData,
+      boolean minimalOnly) {
     List<String> axioms = new ArrayList<>();
-    for (Map.Entry<String, Stmt> entry : grammar.stmtTbl.entrySet()) {
-      Stmt stmt = entry.getValue();
+    for (Stmt stmt : orderedStmts) {
       if (stmt.getSeq() > seqLimit) continue;
       if (!(stmt instanceof Axiom)) continue;
       if (!stmt.getTyp().getId().equals("|-")) continue;
-      myAssert(propositionData.containsKey(stmt.getLabel()));
-      axioms.add("#P_" + stmt.getLabel());
+
+      String label = stmt.getLabel();
+      label = alternateToOriginalStmt.getOrDefault(label, label);
+      myAssert(propositionData.containsKey(label));
+
+      boolean isMinimalAxiom = MINIMAL_AXIOMS.get(datasetName).contains(label);
+      boolean isDefinition = label.startsWith("df-");
+      if (!minimalOnly || isMinimalAxiom || isDefinition) {
+        axioms.add("#P_" + label);
+      }
     }
+    // Get all the axioms listed before definitions
+    axioms.sort(Comparator.comparing(s -> s.substring(0, "#P_ax".length())));
     String name = datasetName;
     if (name.endsWith(".mm")) name = name.substring(0, name.length() - ".mm".length());
     Beliefset beliefset = new Beliefset();
-    beliefset.setNames(new String[] {name});
+    beliefset.setNames(new String[] {name + (minimalOnly ? "_minimal" : "")});
     beliefset.setIndexable(true);
     beliefset.setDescription("Belief set with all axioms and definitions from " + datasetName);
-    beliefset.setUnsupportedPropositionPtrs(axioms.toArray(new String[0]));
+    beliefset.setUnsupportedPropositionPtrs(axioms.toArray(String[]::new));
     return beliefset;
   }
 
@@ -233,7 +261,12 @@ class ResourceStore {
             .sorted(Comparator.comparing(Var::getId))
             .collect(toList()));
 
-    final List<List<Var>> comboDvGroups = ScopeFrame.consolidateDvGroups(comboDvArray);
+    var inPropDvs =
+        Arrays.stream(comboDvArray)
+            .filter(djvars -> idsInProp.contains(djvars.getVarLo().getId()))
+            .filter(djvars -> idsInProp.contains(djvars.getVarHi().getId()))
+            .toArray(DjVars[]::new);
+    final List<List<Var>> comboDvGroups = ScopeFrame.consolidateDvGroups(inPropDvs);
     return comboDvGroups.stream()
         .map(
             dvGroup ->

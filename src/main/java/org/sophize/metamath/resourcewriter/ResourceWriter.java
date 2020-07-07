@@ -12,8 +12,8 @@ import mmj.util.OutputBoss;
 import mmj.verify.Grammar;
 import mmj.verify.VerifyProofs;
 import org.sophize.datamodel.*;
-import org.sophize.metamath.formachines.Databases;
-import org.sophize.metamath.formachines.MachineId;
+import org.sophize.metamath.server.Databases;
+import org.sophize.metamath.server.MachineId;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -90,6 +90,7 @@ public class ResourceWriter {
     fixAxioms(firstStore.defaultBeliefset, new HashMap<>());
     firstStore.defaultBeliefset.setPermanentPtr("#metamath/B.default");
     beliefsets.put(firstStore.defaultBeliefset.getNames()[0], firstStore.defaultBeliefset);
+    beliefsets.put(firstStore.minimalBeliefset.getNames()[0], firstStore.minimalBeliefset);
 
     for (int i = 1; i < stores.size(); i++) {
       ResourceStore store = stores.get(i);

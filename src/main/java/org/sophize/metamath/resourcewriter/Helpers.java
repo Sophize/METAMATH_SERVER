@@ -9,7 +9,6 @@ class Helpers {
     Assrt a1 = t1.primaryAssrt();
     Assrt a2 = t2.primaryAssrt();
 
-    if (a1 instanceof Axiom != a2 instanceof Axiom) return false;
     if (!t1.distinctVarsStatement().equals(t2.distinctVarsStatement())) return false;
     if (!a1.getFormula().toString().equals(a2.getFormula().toString())) return false;
     if (a1.getLogHypArray().length != a2.getLogHypArray().length) return false;
