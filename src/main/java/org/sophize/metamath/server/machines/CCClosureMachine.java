@@ -103,7 +103,7 @@ public class CCClosureMachine extends MetamathMachine {
 
   private static Assrt primitiveStatementPtr(long number) {
     Preconditions.checkArgument(number >= 0 && number < 10);
-    if (number == 1) return Databases.getSetMMAssrt("ax-1cn");
+    if (number == 1) return Databases.getSetMMAssrt("ax1cn");
     return Databases.getSetMMAssrt(number + "cn");
   }
 }

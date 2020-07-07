@@ -26,6 +26,7 @@ public abstract class MetamathMachine {
 
   private static final String METAMATH_SERVER_NAME = "METAMATH_SERVER";
   static final String DOESNT_HANDLE_REASON = "This machine doesn't handle such statements";
+  static final String LENIENT_NOT_SUPPORTED = "Not Supported";
 
   public abstract String getDescription();
 

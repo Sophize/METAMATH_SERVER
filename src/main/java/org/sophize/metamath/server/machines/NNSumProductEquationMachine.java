@@ -79,7 +79,7 @@ public class NNSumProductEquationMachine extends MetamathMachine {
 
   @Override
   public String getDefaultLenientStatement() {
-    return "Not supported";
+    return LENIENT_NOT_SUPPORTED;
   }
 
   @Override
