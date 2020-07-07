@@ -207,7 +207,11 @@ public class ResourceWriter {
                 + "set expression, instead, it is used to ensure that there is only a single "
                 + "symbol used after quantifiers like for-all (∀) and there-exists (∃).");
 
-    return Map.of("wff", wffTerm, "class", classTerm, "setvar", setvarTerm);
+    return Map.ofEntries(
+        Map.entry("wff", wffTerm),
+        Map.entry("class", classTerm),
+        Map.entry("setvar", setvarTerm),
+        Map.entry("distinct_variable", getDistinctVariableTerm()));
   }
 
   private static String getDirectory(Class tClass) throws IOException {
@@ -345,5 +349,22 @@ public class ResourceWriter {
     } catch (Exception e) {
       return null;
     }
+  }
+
+  private static Term getDistinctVariableTerm() {
+    Term distinctVariableTerm = new Term();
+    distinctVariableTerm.setLanguage(Language.INFORMAL);
+    distinctVariableTerm.setMetaLanguage(MetaLanguage.INFORMAL);
+    distinctVariableTerm.setPhrase("distinct variable");
+    distinctVariableTerm.setDefinition(
+        "If a set of variables are declared distinct in an assertion, the assertion is claimed to "
+            + "be true only if the variables are not substituted with each other. Secondly, "
+            + "whenever these variables are substituted with expressions - these expression "
+            + "must have no variables in common. Finally, each possible pair of variables, one "
+            + "from each (substituted) expression, must have been declared distinct as well.");
+    Citation bookCitation = new Citation();
+    bookCitation.setTextCitation("Section 4.2.4 of [metamath book](http://us.metamath.org/#book)");
+    distinctVariableTerm.setCitations(new Citation[] {bookCitation});
+    return distinctVariableTerm;
   }
 }
