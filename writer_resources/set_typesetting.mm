@@ -1723,6 +1723,10 @@ htmldef "Iso" as
     " <IMG SRC='_iso.gif' WIDTH=17 HEIGHT=19 ALT=' Iso' TITLE='Iso'> ";
   althtmldef "Iso" as "Iso";
   latexdef "Iso" as "{\rm Iso}";
+htmldef "~=c" as " <IMG SRC='simeq.gif' WIDTH=26 HEIGHT=19 " +
+    "ALT=' ~=c' TITLE='~=c'><SUB>&#x1D450;</SUB> ";
+  althtmldef "~=c" as " &#8771;<SUB>&#x1D450;</SUB> ";
+  latexdef "~=c" as "\simeq_{c}";
 htmldef "C_cat" as
     " <IMG SRC='subseteq.gif' WIDTH=12 HEIGHT=19 ALT=' C_' TITLE='C_'>" +
     "<SUB>cat</SUB> ";
@@ -1758,9 +1762,15 @@ htmldef "Nat" as " Nat "; althtmldef "Nat" as " Nat ";
   latexdef "Nat" as "{\rm Nat}";
 htmldef "FuncCat" as " FuncCat "; althtmldef "FuncCat" as " FuncCat ";
   latexdef "FuncCat" as " {\rm FuncCat} ";
-htmldef "DiagFunc" as "&Delta;<sub>func</sub>";
-  althtmldef "DiagFunc" as "&Delta;<sub>func</sub>";
-  latexdef "DiagFunc" as "\Delta_{func}";
+htmldef "InitO" as 'InitO';
+  althtmldef "InitO" as 'InitO';
+  latexdef "InitO" as "{\rm InitO}";
+htmldef "TermO" as 'TermO';
+  althtmldef "TermO" as 'TermO';
+  latexdef "TermO" as "{\rm TermO}";
+htmldef "ZeroO" as 'ZeroO';
+  althtmldef "ZeroO" as 'ZeroO';
+  latexdef "ZeroO" as "{\rm ZeroO}";
 htmldef "domA" as
     "<IMG SRC='_dom.gif' WIDTH=26 HEIGHT=19 ALT='dom' TITLE='dom'>" +
     "<IMG SRC='suba.gif' WIDTH=7 HEIGHT=19 ALT='A' TITLE='A'>";
@@ -1784,8 +1794,12 @@ htmldef "SetCat" as
     "<IMG SRC='_setcat.gif' WIDTH=45 HEIGHT=19 ALT=' SetCat' TITLE='SetCat'>";
   althtmldef "SetCat" as "SetCat";
   latexdef "SetCat" as "{\rm SetCat}";
-htmldef "CatCat" as "CatCat"; althtmldef "CatCat" as "CatCat";
+htmldef "CatCat" as "CatCat";
+  althtmldef "CatCat" as "CatCat";
   latexdef "CatCat" as "{\rm CatCat}";
+htmldef "ExtStrCat" as 'ExtStrCat';
+  althtmldef "ExtStrCat" as 'ExtStrCat';
+  latexdef "ExtStrCat" as "{\rm ExtStrCat}";
 htmldef "Xc." as " <IMG SRC='times.gif' WIDTH=9 HEIGHT=19 ALT=' X.' " +
     "TITLE='X.'><sub><i>c</i></sub> ";
   althtmldef "Xc." as ' &times;<sub><i>c</i></sub> ';
@@ -1812,6 +1826,9 @@ htmldef "curryF" as ' curry<sub><i>F</i></sub> ';
 htmldef "uncurryF" as ' uncurry<sub><i>F</i></sub> ';
   althtmldef "uncurryF" as ' uncurry<sub><i>F</i></sub> ';
   latexdef "uncurryF" as " {\rm uncurry}_F ";
+htmldef "DiagFunc" as "&Delta;<sub>func</sub>";
+  althtmldef "DiagFunc" as "&Delta;<sub>func</sub>";
+  latexdef "DiagFunc" as "\Delta_{func}";
 htmldef "HomF" as 'Hom<sub><i>F</i></sub>';
   althtmldef "HomF" as 'Hom<sub><i>F</i></sub>';
   latexdef "HomF" as "{\rm Hom}_F";
@@ -1953,9 +1970,9 @@ htmldef "Word" as "Word ";
 htmldef "lastS" as ' lastS ';
   althtmldef "lastS" as ' lastS ';
   latexdef "lastS" as "{\rm lastS}";
-htmldef "concat" as " concat ";
-  althtmldef "concat" as " concat ";
-  latexdef "concat" as "\mathrm{ concat }";
+htmldef "++" as " ++ ";
+  althtmldef "++" as " ++ ";
+  latexdef "++" as "\mathrm{ ++ }";
 htmldef '<"' as
     "<IMG SRC='langle.gif' WIDTH=4 HEIGHT=19 ALT=' &lt;' TITLE='&lt;'>" +
     "<IMG SRC='backquote.gif' WIDTH=7 HEIGHT=19 ALT='" + '"' +
@@ -2851,6 +2868,9 @@ htmldef "log" as
     "<IMG SRC='_log.gif' WIDTH=20 HEIGHT=19 ALT=' log' TITLE='log'>";
   althtmldef "log" as "log";
   latexdef "log" as "\log";
+htmldef "logb" as " log<sub>b</sub> ";
+  althtmldef "logb" as " log<sub>b</sub> ";
+  latexdef "logb" as "{\rm log}_b";
 htmldef "^c" as
     " <IMG SRC='uparrow.gif' WIDTH=7 HEIGHT=19 ALT=' ^' TITLE='^'>" +
     "<IMG SRC='subc.gif' WIDTH=6 HEIGHT=19 ALT='c' TITLE='c'> ";
@@ -3536,6 +3556,9 @@ htmldef "Ddelta" as "&delta;";
 htmldef "toOMeas" as "toOMeas";
   althtmldef "toOMeas" as "toOMeas";
   latexdef "toOMeas" as "{\rm toOMeas}";
+htmldef "toCaraSiga" as "toCaraSiga";
+  althtmldef "toCaraSiga" as "toCaraSiga";
+  latexdef "toCaraSiga" as "{\rm toCaraSiga}";
 htmldef "MblFnM" as "MblFnM";
   althtmldef "MblFnM" as "MblFnM";
   latexdef "MblFnM" as "{\rm MblFnM}";
@@ -3627,8 +3650,8 @@ htmldef "cgrG" as "cgrG";
 htmldef "leG" as "&le;G";
   althtmldef "leG" as "&le;G";
   latexdef "leG" as "\le{\rm G}";
-htmldef "raG" as "&angrt;G";
-  althtmldef "raG" as "&angrt;G";
+htmldef "raG" as "&#8735;G"; /* &angrt; fails validator so use its code */
+  althtmldef "raG" as "&#8735;G"; /* &angrt; fails validator so use its code */
   latexdef "raG" as "\L{\rm G}";
 htmldef "perpG" as "&#x27C2;G";
   althtmldef "perpG" as "&#x27C2;G";
@@ -3888,9 +3911,9 @@ htmldef "Cp" as "Cp"; althtmldef "Cp" as "Cp";
 
 /* Mathbox of Drahflow */
 htmldef "^r" as
-    "<IMG SRC='uparrow.gif' WIDTH=7 HEIGHT=19 ALT=' ^' TITLE='^'>" +
-    "<IMG SRC='r.gif' WIDTH=8 HEIGHT=19 ALT='r' TITLE='r'>" ;
-  althtmldef "^r" as '&uarr;r';
+    " <IMG SRC='uparrow.gif' WIDTH=7 HEIGHT=19 ALT='^' TITLE='^'>" +
+    "<IMG SRC='subr.gif' WIDTH=5 HEIGHT=19 ALT='r' TITLE='r'> " ;
+  althtmldef "^r" as '&uarr;<sub>&#x1D45F;</sub>';
   latexdef "^r" as "\uparrow_r";
 htmldef "t*rec" as "<IMG SRC='t.gif' WIDTH=7 HEIGHT=19 ALT=' t' TITLE='t'>" +
     "<IMG SRC='ast.gif' WIDTH=7 HEIGHT=19 ALT='*' TITLE='*'>" + "rec";
@@ -3928,9 +3951,11 @@ htmldef "bday" as
     "<IMG SRC='_bday.gif' WIDTH=32 HEIGHT=19 ALT=' bday' TITLE='bday'>";
   althtmldef "bday" as '<FONT FACE=sans-serif> bday </FONT>';
   latexdef "bday" as "{\rm bday}";
-htmldef "(++)" as "(++)";
-  althtmldef "(++)" as "(++)";
-  latexdef "(++)" as "(++)";
+htmldef "/_\" as
+    " <IMG SRC='bigtriangleup.gif' WIDTH=13 HEIGHT=19" +
+    " ALT=' /_\' TITLE='/_\'> ";
+  althtmldef "/_\" as " &#x25b3; ";
+  latexdef "/_\" as "\triangle";
 htmldef "(x)" as
     " <IMG SRC='otimes.gif' WIDTH=13 HEIGHT=19 ALT=' (x)' TITLE='(x)'> ";
   althtmldef "(x)" as " &#x2297; ";
@@ -4313,6 +4338,9 @@ htmldef "TopLnd" as "TopLnd";
 htmldef "lcm" as " lcm ";
   althtmldef "lcm" as " lcm ";
   latexdef "lcm" as "\,{\rm lcm}\,";
+htmldef "_Cc" as "C<SUB>&#x1D450;</SUB>";
+  althtmldef "_Cc" as "C<SUB>&#x1D450;</SUB>";
+  latexdef "_Cc" as "{\rm C}_c";
 /* End of Steve Rodriguez's mathbox */
 
 /* Mathbox of Andrew Salmon */
@@ -4427,6 +4455,15 @@ htmldef "))" as ')) ';
 htmldef ".ef" as ' .ef ';
   althtmldef ".ef" as ".ef";
   latexdef ".ef" as "{\rm ef}";
+htmldef "Even" as ' Even ';
+ althtmldef "Even" as ' Even ';
+ latexdef "Even" as "{\rm Even}";
+htmldef "Odd" as ' Odd ';
+ althtmldef "Odd" as ' Odd ';
+ latexdef "Odd" as "{\rm Odd}";
+htmldef "prefix" as ' prefix ';
+ althtmldef "prefix" as ' prefix ';
+ latexdef "prefix" as "{\rm prefix}";
 htmldef "UHGraph" as ' UHGraph ';
  althtmldef "UHGraph" as ' UHGraph ';
  latexdef "UHGraph" as "{\rm UHGraph}";
@@ -4490,34 +4527,18 @@ htmldef "RngHomo" as ' RngHomo ';
 htmldef "RngIsom" as ' RngIsom ';
  althtmldef "RngIsom" as ' RngIsom ';
  latexdef "RngIsom" as "{\rm RngIsom}";
-htmldef "~=c" as " <IMG SRC='simeq.gif' WIDTH=26 HEIGHT=19 " +
-    "ALT=' ~=c' TITLE='~=c'><SUB>&#x1D450;</SUB> ";
-  althtmldef "~=c" as " &#8771;<SUB>&#x1D450;</SUB> ";
-  latexdef "~=c" as "\simeq_{c}";
-htmldef "InitO" as 'InitO';
- althtmldef "InitO" as 'InitO';
- latexdef "InitO" as "{\rm InitO}";
-htmldef "TermO" as 'TermO';
- althtmldef "TermO" as 'TermO';
- latexdef "TermO" as "{\rm TermO}";
-htmldef "ZeroO" as 'ZeroO';
- althtmldef "ZeroO" as 'ZeroO';
- latexdef "ZeroO" as "{\rm ZeroO}";
-htmldef "ExtStrCat" as 'ExtStrCat';
- althtmldef "ExtStrCat" as 'ExtStrCat';
- latexdef "ExtStrCat" as "{\rm ExtStrCat}";
 htmldef "RngCat" as 'RngCat';
  althtmldef "RngCat" as 'RngCat';
  latexdef "RngCat" as "{\rm RngCat}";
 htmldef "RingCat" as 'RingCat';
  althtmldef "RingCat" as 'RingCat';
  latexdef "RingCat" as "{\rm RingCat}";
-htmldef "RngCatOLD" as 'RngCatOLD';
- althtmldef "RngCatOLD" as 'RngCatOLD';
- latexdef "RngCatOLD" as "{\rm RngCatOLD}";
-htmldef "RingCatOLD" as 'RingCatOLD';
- althtmldef "RingCatOLD" as 'RingCatOLD';
- latexdef "RingCatOLD" as "{\rm RingCatOLD}";
+htmldef "RngCatALTV" as 'RngCatALTV';
+ althtmldef "RngCatALTV" as 'RngCatALTV';
+ latexdef "RngCatALTV" as "{\rm RngCatALTV}";
+htmldef "RingCatALTV" as 'RingCatALTV';
+ althtmldef "RingCatALTV" as 'RingCatALTV';
+ latexdef "RingCatALTV" as "{\rm RingCatALTV}";
 htmldef "DMatALT" as ' DMatALT ';
  althtmldef "DMatALT" as ' DMatALT ';
  latexdef "DMatALT" as "{\rm DMatALT}";
@@ -4536,6 +4557,18 @@ htmldef "linIndS" as ' linIndS ';
 htmldef "linDepS" as ' linDepS ';
  althtmldef "linDepS" as ' linDepS ';
  latexdef "linDepS" as "{\rm linDepS}";
+htmldef "/_f" as ' /_f ';
+ althtmldef "/_f" as ' /<sub>f</sub> ';
+ latexdef "/_f" as "{\rm /}_f";
+htmldef "_O" as '_O';
+ althtmldef "_O" as "&#x39F;";
+ latexdef "_O" as "\Omicron";
+htmldef "#b" as '#b';
+ althtmldef "#b" as '#<sub>b</sub>';
+ latexdef "#b" as "{\rm #}_b";
+htmldef "digit" as 'digit';
+ althtmldef "digit" as 'digit';
+ latexdef "digit" as "{\rm digit}";
 /* End of Alexander van der Vekens's mathbox */
 
 /* Mathbox of David A. Wheeler */
@@ -4591,9 +4624,6 @@ htmldef "." as
     "<IMG SRC='period.gif' WIDTH=20 HEIGHT=19 ALT=' period' TITLE='period'>";
   althtmldef "." as ".";
   latexdef "." as "\.";
-htmldef "logb" as "logb";
-  althtmldef "logb" as "logb";
-  latexdef "logb" as "logb";
 htmldef "log_" as "log_";
   althtmldef "log_" as "log_";
   latexdef "log_" as "log_";
@@ -5952,7 +5982,7 @@ htmldef "-Set->" as " -Set-> ";
   althtmldef "-Set->" as ' <span style = " ' +
     ' overflow: visible; width: 0px; height: 0px; display: inline-block; ' +
     ' font-size: 65%; position: relative; top: -1.4ex; ' +
-    ' left: 0.3ex">Set</span>&#x27f6; ';
+    ' left: 0.4ex">Set</span>&#x27f6; ';
   latexdef "-Set->" as "\overset{\text{Set}}{\longrightarrow}";
 htmldef "curry_" as "curry_";
   althtmldef "curry_" as "curry_";
@@ -6324,6 +6354,10 @@ htmldef "HLtoHil" as "HLtoHil"; althtmldef "HLtoHil" as "HLtoHil";
 /* End of Norm Megill's mathbox */
 
 /* Mathbox of Richard Penner */
+htmldef "r*" as "<IMG SRC='r.gif' WIDTH=7 HEIGHT=19 ALT=' r' TITLE='r'>" +
+    "<IMG SRC='ast.gif' WIDTH=7 HEIGHT=19 ALT='*' TITLE='*'>";
+  althtmldef "r*" as "r*";
+  latexdef "r*" as "{\rm r}*";
 htmldef "hereditary" as " hereditary ";
   althtmldef "hereditary" as " hereditary ";
   latexdef "hereditary" as "{\rm hereditary}";

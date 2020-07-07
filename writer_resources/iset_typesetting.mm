@@ -1146,6 +1146,29 @@ htmldef "..." as "<IMG SRC='ldots.gif' WIDTH=18 HEIGHT=19 " +
     "ALT=' ...' TITLE='...'>";
   althtmldef "..." as "...";
   latexdef "..." as "\ldots";
+htmldef "..^" as "..^";
+  althtmldef "..^" as "..^";
+  latexdef "..^" as "..\^";
+htmldef "seq" as " <IMG SRC='_seq.gif' WIDTH=22 HEIGHT=19 ALT=' seq' " +
+    "TITLE='seq'>";
+  althtmldef "seq" as 'seq';
+  latexdef "seq" as "{\rm seq}";
+htmldef "^" as "<IMG SRC='uparrow.gif' WIDTH=7 HEIGHT=19 ALT=' ^' TITLE='^'>";
+  althtmldef "^" as '&uarr;';
+  latexdef "^" as "\uparrow"; /*
+  latexdef "^" as "\widehat{\ }"; */
+htmldef "Re" as "<IMG SRC='re.gif' WIDTH=12 HEIGHT=19 ALT=' Re' TITLE='Re'>";
+  althtmldef "Re" as '&real;';
+    /* 2-Jan-2016 reverted sans-serif */
+  latexdef "Re" as "\Re";
+htmldef "Im" as "<IMG SRC='im.gif' WIDTH=12 HEIGHT=19 ALT=' Im' TITLE='Im'>";
+  althtmldef "Im" as '&image;';
+    /* 2-Jan-2016 reverted sans-serif */
+  latexdef "Im" as "\Im";
+htmldef "*" as "<IMG SRC='ast.gif' WIDTH=7 HEIGHT=19 ALT=' *' TITLE='*'>";
+  althtmldef "*" as '&lowast;';
+    /* 2-Jan-2016 reverted sans-serif */
+  latexdef "*" as "*";
 htmldef "\/_" as
     " <IMG SRC='veebar.gif' WIDTH=9 HEIGHT=19 ALT=' \/_' TITLE='\/_'> ";
   althtmldef "\/_" as " &#8891; ";

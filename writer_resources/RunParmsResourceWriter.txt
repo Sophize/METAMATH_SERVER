@@ -18,8 +18,3 @@ Parse,*
 SvcArg,databaseName,iset.mm
 SvcCall,
 Clear,
-LoadFile,writer_resources/nf.mm
-Parse,*
-SvcArg,databaseName,nf.mm
-SvcCall
-Clear,
