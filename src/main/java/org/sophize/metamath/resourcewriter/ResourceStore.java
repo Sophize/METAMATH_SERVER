@@ -45,6 +45,11 @@ class ResourceStore {
   }
 
   void createResources(Grammar grammar) {
+    var mathStmt = grammar.stmtTbl.get("mathbox");
+    if (mathStmt != null) seqLimit = Math.min(seqLimit, mathStmt.getSeq());
+    if (databaseName.equals("iset.mm")) {
+      seqLimit = Math.min(seqLimit, 14341000); // cseq is conflicting syntax in set.mm and iset.mm
+    }
     isProvable = grammar.getProvableLogicStmtTypArray()[0];
     List<Stmt> orderedStmts =
         grammar.stmtTbl.values().stream()
