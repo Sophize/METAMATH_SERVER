@@ -5,6 +5,7 @@ import mmj.lang.*;
 import mmj.verify.*;
 import org.sophize.datamodel.Beliefset;
 
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -221,7 +222,10 @@ class ResourceStore {
     Beliefset beliefset = new Beliefset();
     beliefset.setNames(new String[] {name + (minimalOnly ? "_minimal" : "")});
     beliefset.setIndexable(true);
-    beliefset.setDescription("Belief set with all axioms and definitions from " + datasetName);
+    beliefset.setDescription(
+        MessageFormat.format(
+            "Belief set with definitions and {0} axioms from {1}",
+            (minimalOnly ? "minimal" : "all"), datasetName));
     beliefset.setUnsupportedPropositionPtrs(axioms.toArray(String[]::new));
     return beliefset;
   }
