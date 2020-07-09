@@ -70,7 +70,7 @@ class TempTerm {
     List<String> defnLabels =
         defns.stream().map(Stmt::getLabel).distinct().collect(Collectors.toList());
     if (defnLabels.size() == 1) {
-      String definitionLink = "#P_" + defnLabels.get(0) + "|NAV_LINK|HIDE_TVI";
+      String definitionLink = "#P_" + defnLabels.get(0);
       remarks
           .append("\n\nThis syntax is primitive. The first axiom using it is ")
           .append(definitionLink)
@@ -79,7 +79,7 @@ class TempTerm {
       remarks.append(
           "\n\n---\n\nThis syntax is primitive. It may be defined by the following axioms: \n");
       for (String label : defnLabels) {
-        String definitionLink = "#P_" + label + "|NAV_LINK|HIDE_TVI";
+        String definitionLink = "#P_" + label;
         remarks.append(definitionLink).append("\n");
       }
     }
