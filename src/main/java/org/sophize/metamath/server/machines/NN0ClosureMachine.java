@@ -63,7 +63,7 @@ public class NN0ClosureMachine extends MetamathMachine {
     var number = NumberRepresentation.fromDigits(getDigitsLenient(proposition.getStatement()));
     if (number == null) return null;
     proposition.setLanguage(Language.METAMATH_SET_MM);
-    proposition.setStatement("|- " + number + " e. NN");
+    proposition.setStatement("|- " + number + " e. NN0");
     return parseStrict(proposition);
   }
 
