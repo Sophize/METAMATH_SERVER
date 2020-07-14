@@ -255,7 +255,8 @@ class ResourceStore {
       try {
         proofSteps =
             new VerifyProofs()
-                .getProofDerivationSteps((Theorem) assrt, true, HypsOrder.Correct, isProvable);
+                .getProofDerivationSteps(
+                    (Theorem) assrt, true, HypsOrder.Correct, isProvable, false);
       } catch (VerifyException | ArrayIndexOutOfBoundsException e) {
         proofSteps = new ArrayList<>();
       }
@@ -310,7 +311,7 @@ class ResourceStore {
     try {
       List<ProofDerivationStepEntry> proofSteps =
           new VerifyProofs()
-              .getProofDerivationSteps((Theorem) stmt, true, HypsOrder.Correct, isProvable);
+              .getProofDerivationSteps((Theorem) stmt, true, HypsOrder.Correct, isProvable, false);
 
       List<ParseTree> parsedSteps =
           proofSteps.stream()
