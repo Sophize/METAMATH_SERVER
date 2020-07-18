@@ -81,7 +81,7 @@ public class SpringbootApplication {
     }
 
     MachineProof proof = m.getProof(parsed);
-    proof = new ProofCollapser(ProofExpander.expand(proof, parsed)).compress(parsed);
+    proof = new ProofCollapser(ProofExpander.expand(proof, parsed)).collapse(parsed);
 
     var existingPropositionPtr = proof.getExistingPropositionPtr();
     ProofResponse response = new ProofResponse();
