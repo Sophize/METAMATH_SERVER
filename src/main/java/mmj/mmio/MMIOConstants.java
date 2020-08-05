@@ -233,6 +233,7 @@ public class MMIOConstants {
 
     public static final String CHAPTER_ID_STRING = "#*#*";
     public static final String SECTION_ID_STRING = "=-=-";
+    public static final String RESOURCE_NAME_PREFIX = "Resource:";
 
     public static final String TYPESETTING_COMMENT_ID_STRING = "$t";
     public static final String TYPESETTING_C_COMMENT_START = "/*";
@@ -446,6 +447,9 @@ public class MMIOConstants {
         "I-IO-0109 Load Endpoint Statement Label Reached,"
             + " Metamath file(s) load to be halted at input statement"
             + " label = %d");
+
+    public static final ErrorCode ERRMSG_LOAD_REQ_RESOURCE_NOTFND = of(
+        "A-IO-0110 Load() Resource not found. File name = %s");
 
     // from IncludeFile.java
 

@@ -20,6 +20,7 @@ package mmj.util;
 import java.io.*;
 import java.util.Iterator;
 
+import mmj.mmio.MMIOConstants;
 import mmj.pa.MMJException;
 
 /**
@@ -83,11 +84,13 @@ public class RunParmFile implements Iterator<RunParmArrayEntry>, Closeable {
     public RunParmFile(final Paths paths, final String runParmFileNameArgument)
         throws MMJException, IOException
     {
-        String resourcePrefix = "Resource:";
-        if(runParmFileNameArgument.startsWith(resourcePrefix)) {
-            var resourceName = runParmFileNameArgument.substring(resourcePrefix.length());
-            var inputStream = RunParmFile.class.getResourceAsStream(resourceName);
-            runParmFileReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+        if(runParmFileNameArgument.startsWith(
+                MMIOConstants.RESOURCE_NAME_PREFIX)) {
+            String name = runParmFileNameArgument.substring(
+                    MMIOConstants.RESOURCE_NAME_PREFIX.length());
+            var inputStream = RunParmFile.class.getResourceAsStream(name);
+            runParmFileReader = new BufferedReader(
+                    new InputStreamReader(inputStream, "UTF-8"));
             inputLine = runParmFileReader.readLine();
             return;
         }

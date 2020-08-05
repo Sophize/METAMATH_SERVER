@@ -224,24 +224,16 @@ public class Systemizer {
                 throw new MMIOException(MMIOConstants.ERRMSG_LOAD_REQ_FILE_DUP,
                     fileNameIn);
 
-            readerIn = new BufferedReader(
-                new InputStreamReader(new FileInputStream(f)),
-                MMIOConstants.READER_BUFFER_SIZE);
+            if (fileNameIn.startsWith(MMIOConstants.RESOURCE_NAME_PREFIX)) {
+                readerIn = getReaderForResource(fileNameIn);
+            } else {
+                readerIn = new BufferedReader(
+                        new InputStreamReader(new FileInputStream(f)),
+                        MMIOConstants.READER_BUFFER_SIZE);
+            }
         } catch (final FileNotFoundException e) {
-            String resourcePrefix = "Resource:";
-            if(!fileNameIn.startsWith(resourcePrefix)) {
-                throw new MMIOException(MMIOConstants.ERRMSG_LOAD_REQ_FILE_NOTFND,
-                                        f.getAbsolutePath());
-            }
-            try{
-                var resourceName = fileNameIn.substring(resourcePrefix.length());
-                var inputStream = Systemizer.class.getResourceAsStream(resourceName);
-                readerIn = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"),
-                                              MMIOConstants.READER_BUFFER_SIZE);
-            } catch (UnsupportedEncodingException e1){
-              throw new MMIOException(MMIOConstants.ERRMSG_LOAD_REQ_FILE_NOTFND,
-                f.getAbsolutePath());
-            }
+          throw new MMIOException(MMIOConstants.ERRMSG_LOAD_REQ_FILE_NOTFND,
+            f.getAbsolutePath());
         }
 
         try {
@@ -620,6 +612,19 @@ public class Systemizer {
         filesAlreadyLoaded.add(absPath);
 
         return f;
+    }
+
+    private Reader getReaderForResource(String fileNameIn) throws MMIOException {
+        String name = fileNameIn.substring(
+                MMIOConstants.RESOURCE_NAME_PREFIX.length());
+        try{
+            var inputStream = Systemizer.class.getResourceAsStream(name);
+            var reader = new InputStreamReader(inputStream, "UTF-8");
+            return new BufferedReader(reader, MMIOConstants.READER_BUFFER_SIZE);
+        } catch (IOException e){
+            throw new MMIOException(MMIOConstants.ERRMSG_LOAD_REQ_RESOURCE_NOTFND,
+                                    fileNameIn);
+        }
     }
 
     private void finalizePrematureEOF() throws IOException {
