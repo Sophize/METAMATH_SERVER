@@ -1,0 +1,16 @@
+{
+  "contributor": {
+    "handle": "abc"
+  },
+  "title": "Prime Numbers",
+  "authors": [
+    {
+      "user": {
+        "handle": "abc"
+      }
+    }
+  ],
+  "abstractText": "Define prime numbers and describe a few methods for testing primality.",
+  "beliefset": "#metamath/B.default",
+  "content": "## Definition\nThe set of prime numbers is the sub-set of natural numbers having exactly 2 divisors.\n\n#P_df-prm|EXPAND\n\nThe two divisors are $1$ and the number itself.\n\n## Primality checks\nThere are multiple ways to check if a number is prime. Lets look at a few of them.\n\n**Note: Use #M_prime_number to see if a number is prime or not.**\n\n### Composite Numbers\nIf a number can be shown to be a product of two numbers greater than 1, it is clearly has more than two divisors and it thus not prime. \n\n#P_nprmi|EXPAND\n\nFor example, the numbers 9 and 10 are not prime since it can be represented as a  $(3 \\cdot 3)$ and $(5 \\cdot 2)$ respectively. See #A_9nprm #A_10nprm for formal proofs.\n\n### Naïve prime test\nA naive way to verify that a number is prime is to check divisibility by all numbers between $1$ and the number itself. \nSince, a number cannot be divisible by numbers greater than itself, this is sufficient to prove its membership in the set of primes.\n\n#P_isprm3|EXPAND\n\nThis algorithm is used to verify that the numbers $2$ and $3$ are prime. See #A_2prm, #A_3prm\n\n### Eliminating redundancy\nWe can use two important facts to considerably speed up the our algorithm:\n* $f$ is a factor of $N$, iff so is $N/f$. \n* $f$ is a factor of $N$, iff all prime factors of $f$ divide $N$.\n\nThus to check if a number is prime, we need to test for divisibility of $N$ with prime upto numbers $\\sqrt N$.\nFor example for all number less than 25 we need to only test divisibility with the prime numbers less than $\\sqrt 25 = 5$, i.e. numbers $2$ and $3.$ This is proven in #P_prmlem1. See application of this lemma in primality proofs of numbers 17 and 23 (#A_17prm, #A_23prm). \n\n###  Pocklington's theorem\nFor testing primality of large primes, several methods more efficient than trial division have been devised. One such method is the Pocklington's theorem. Learn more about this algorithm at #P_pockthi. This theorem has been used in the set.mm database to prove primality of 1259 and 4001 (#A_1259prm, #A_4001prm). "
+}

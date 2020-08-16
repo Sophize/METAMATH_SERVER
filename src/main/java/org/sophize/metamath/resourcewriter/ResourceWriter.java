@@ -23,13 +23,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.sophize.datamodel.ResourceUtils.toJsonString;
 import static org.sophize.metamath.Utils.myAssert;
 import static org.sophize.metamath.resourcewriter.TempTerm.createPrimitiveMetamathTerm;
 
 public class ResourceWriter {
-  private static final String OUTPUT_DIRECTORY = "output";
+  private static final String OUTPUT_DIRECTORY = "_data";
+  private static final String MANUAL_DIRECTORY = "manual";
   private static final String RUN_PARMS_FILE = "writer_resources/RunParmsResourceWriter.txt";
   private static List<ResourceStore> STORES = new ArrayList<>();
 
@@ -39,9 +41,45 @@ public class ResourceWriter {
           "class", "\\color{#C3C}",
           "setvar", "\\color{red}");
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
+    resetOutputDirectory();
     BatchMMJ2 batchMMJ2 = new BatchMMJ2();
     batchMMJ2.generateSvcCallback(new String[] {RUN_PARMS_FILE}, ResourceWriter::svcCallback);
+  }
+
+  private static void resetOutputDirectory() throws IOException {
+    Path directory = Paths.get(OUTPUT_DIRECTORY);
+    // read java doc, Files.walk need close the resources.
+    // try-with-resources to ensure that the stream's open directories are closed
+    try (Stream<Path> walk = Files.walk(directory)) {
+      walk.sorted(Comparator.reverseOrder())
+          .forEach(
+              path -> {
+                try {
+                  Files.delete(path);
+                } catch (IOException e) {
+                  System.exit(-1);
+                }
+              });
+    }catch (Exception e){
+
+    }
+
+    File file = new File(OUTPUT_DIRECTORY);
+    file.mkdir();
+
+    Path manualDirectory = Paths.get(MANUAL_DIRECTORY);
+    try (Stream<Path> walk = Files.list(manualDirectory)) {
+      walk.forEach(
+          src -> {
+            Path dest = Paths.get(OUTPUT_DIRECTORY, src.getFileName().toString());
+            try {
+              Files.copy(src, dest);
+            } catch (Exception e) {
+              System.exit(-1);
+            }
+          });
+    }
   }
 
   private static void svcCallback(

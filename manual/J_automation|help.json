@@ -1,0 +1,9 @@
+{
+  "parentPageId": "",
+  "title": "Help",
+  "description": "***Please report any platform-related issues in the comment section below.***\n\n### Contributing\nTo add or update a project page, you will need to [sign-up](signup) on the platform. We use your email to authenticate and don't ask/track any private information. Once signed up, I will grant you the permissions to add/edit data here.\n\n### Text Editor\nThis page highlights some helpful features of the text editor on this site. These are available to you when adding comments, creating pages - any place you need to add text.\n\nThe editor interprets the text as markdown. See this <a target=_blank href=\"https://www.markdownguide.org/cheat-sheet/\">cheatsheet</a> for some commonly used markdown syntax.\n\n#### Latex\nIn addition to standard markdown, you can also use $\\LaTeX$ anywhere in the text by enclosing it in '$' symbol. See example below:\n```\nThe Euler's equation is the identity $$e^{i \\pi} + 1 = 0$$ \nwhere $e$ is the Euler's number and $i$ is the imaginary unit.\n```\nrenders like so:\n> The Euler's equation is the identity $$e^{i \\pi} + 1 = 0$$ where $e$ is the Euler's number and $i$ is the imaginary unit\n\n#### Smart links\nSophize also allows you to add smart links to various resource in this dataset:\n\n| Sample Smart Link | Description |\n| -- | -- |\n| `#P_deccl` | Renders as #P_deccl - a link to proposition 'deccl' in `set.mm` |\n| `#A_deccl`  | Renders as #A_deccl - a link to proof of proposition 'deccl' in `set.mm` |\n| `#metamath/J_automation/proposals` | Renders as #metamath/J_automation/proposals - a link to a page in this project. |\n| #34 | Link to reference to comment number 34 in this project. |",
+  "sortHint": 100,
+  "contributor": {
+    "handle": "abc"
+  }
+}

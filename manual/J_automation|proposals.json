@@ -1,0 +1,9 @@
+{
+  "parentPageId": "",
+  "title": "Proposals",
+  "description": "This is the top-level page for proposals for the design of the Metamath Automation Framework. \n\nWhile creating a new proposal please keep the following in mind:\n1. Please add this page as the parent for any proposals you add.\n2. `Sort Index` is used to set the order of child-pages of a page. When adding a new proposal, set this value to the proposal numbers. Eg. Set `Sort Index` to 3 for 'Proposal 3'. Proposal 3a can be 3.1 etc.\n\nYou can use the following template to specify your proposal:\n\n```\nProposed by: [Your Name] \\\nContributors: [] \\\n[State if it builds-over/borrows-from some other proposals]\n[Provide a brief overview]\n\n### Advantages/Features\n* Specify what specific problem(s) this proposal solves.\n* Feel free to compare with other proposals\n\n### Drawbacks/Limitations\n* Specify features that this proposal lacks (which other proposals have)\n* Include practical problems such as performance issues, implementation difficulties. \n\n### Detailed Overview\n* Specify more details here but don't make it too long\n* Add sub-pages for more details\n\nRemember its the internet, give people interesting stuff (examples/advantages)\nearly-on or they will move on to shinier things.\n\n### Open problems\n* Specify major issues to be resolved for this proposal to work.\n* These problems will be discussed and resolved in the comment section.\n```",
+  "sortHint": 1,
+  "contributor": {
+    "handle": "abc"
+  }
+}

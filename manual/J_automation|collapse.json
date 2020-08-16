@@ -1,0 +1,9 @@
+{
+  "parentPageId": "proposal1",
+  "title": "Collapse Algorithm",
+  "description": "On this page, we provide details of the algorithm that collapses multiple sub-proofs from various modules into Metamath proof(s). The algorithm is implemented [here.](https://github.com/Sophize/METAMATH_SERVER/blob/master/src/main/java/org/sophize/metamath/server/ProofCollapser.java)\n\nAfter all the modules have generated sub-proofs required for proving the input proposition, we have a list of (say) $N$ sub-proofs  $a_1$, $a_2$, ... $a_N$. Each of these $N$ subproofs prove one proposition - $a_i$ proves $p_i$. The proposition whose proof we are ultimately interested in is $p_1$.\n\nWe call the list of sub-proofs immediately needed by a sub-proof its *direct dependencies*. The *direct dependencies* of sub-proofs form a directed acyclic graph. This is because some proposition (e.g. `5 e. NN0`) may be required in multiple sub-parts of a proof.\n\nThe collapse algorithm works by finding one topological sorting of this graph (chosen arbitrarily). We start with the sub-proofs that don't have any dependencies (i.e., everything they need is already proven in `set.mm`). Using these sub-proofs, we start creating a list of steps. Then we move in the sorting order and keep adding steps from each argument ending with $a_1$. Duplicate steps are removed, and placeholder steps (steps that say delegate to X module) are replaced.\n\nHowever, if any of the propositions $p_1$..$p_N$ has a logical hypothesis, it cannot be collapsed with the main proof. A separate lemma needs to be generated for such a statement along with an independent proof. The proof for such lemmas is generated (recursively) in the same way as described before.",
+  "sortHint": 1,
+  "contributor": {
+    "handle": "abc"
+  }
+}

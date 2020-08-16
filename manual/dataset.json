@@ -1,0 +1,16 @@
+{
+  "name": "Metamath",
+  "description": "Metamath is a formal language for verifying and studying mathematical proofs (us.metamath.org)",
+  "bannerUrl": "",
+  "iconUrl": "https://i.ibb.co/XjxpMCB/mmlogo.png",
+  "licenses": [
+    {
+      "licenseType": "CC0",
+      "linkToLicense": "https://creativecommons.org/publicdomain/zero/1.0/legalcode"
+    }
+  ],
+  "openAcls": ["READ_DATA", "COMMENT"],
+  "customHomeArticle": true,
+  "subscribedDatasets": [],
+  "tags": []
+}
